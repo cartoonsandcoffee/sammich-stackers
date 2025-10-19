@@ -1,12 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Fredoka+One&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  /* Color palette */
+  --tray-tan: #D4A574;
+  --tile-beige: #E8DCC4;
+  --mystery-meat: #8B4513;
+  --mustard-yellow: #FFD700;
+  --ketchup-red: #E63946;
+  --pickle-green: #2A9D8F;
+  --milk-carton: #F4F1DE;
+  --chocolate-milk: #6F4E37;
+  --chalkboard: #2F4538;
+  --linoleum: #E0E0E0;
+  --metal-gray: #A8A9AD;
+  --neon-orange: #FF6B35;
+  --bubblegum-pink: #FF69B4;
+  --grape-juice: #7209B7;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Baloo 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, var(--tile-beige) 0%, var(--tray-tan) 100%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3 {
+  font-family: 'Fredoka One', cursive;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--linoleum);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mystery-meat);
+  border-radius: 10px;
+  border: 2px solid var(--linoleum);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--chocolate-milk);
 }

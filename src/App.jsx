@@ -318,7 +318,7 @@ const getInitialState = () => {
       phase: 'username_entry',
       username: '',
       playerCollection: createStarterDeck(),
-      playerName: "You",
+      playerName: state.username ? `You (${state.username})` : "You",
       cash: 0,
       wins: 0,
       losses: 0,
@@ -358,7 +358,7 @@ const getInitialState = () => {
     phase: savedUsername ? 'matchmaking' : 'username_entry',
     username: savedUsername || '',
     playerCollection: createStarterDeck(),
-    playerName: "You",
+    playerName: savedUsername ? `You (${savedUsername})` : "You",
     cash: savedCash ? parseInt(savedCash) : 0,
     wins: savedWins ? parseInt(savedWins) : 0,
     losses: savedLosses ? parseInt(savedLosses) : 0,
@@ -393,9 +393,10 @@ const gameReducer = (state, action) => {
       localStorage.setItem('sammich_username', action.username);
       return {
         ...state,
-        username: action.username,
-        phase: 'matchmaking',
-        message: 'Finding opponent...'
+		username: action.username,
+		playerName: `You (${action.username})`,
+		phase: 'matchmaking',
+		message: 'Finding opponent...'
       };
     }
     

@@ -14,8 +14,8 @@ export const styles = {
   
   // Player areas
   playerArea: "rounded-cafeteria shadow-tray p-4 sm:p-6 border-4 transition-all duration-300",
-  playerAreaActive: "bg-gradient-to-br from-pickle-green to-teal-400 border-chalkboard",
-  playerAreaInactive: "bg-gradient-to-br from-gray-200 to-gray-300 border-gray-500 opacity-80",
+  playerAreaActive: "rounded-2xl p-4 sm:p-6 border-4 bg-gradient-to-br from-teal-400 to-green-400 border-gray-800 shadow-lg transition-all duration-300",
+  playerAreaInactive: "rounded-2xl p-4 sm:p-6 border-4 bg-gray-300 border-gray-500 opacity-80 transition-all duration-300",
   opponentArea: "rounded-cafeteria shadow-tray p-4 sm:p-6 border-4 transition-all duration-300",
   opponentAreaActive: "bg-gradient-to-br from-ketchup-red to-bubblegum-pink border-chalkboard",
   opponentAreaInactive: "bg-gradient-to-br from-gray-200 to-gray-300 border-gray-500 opacity-80",

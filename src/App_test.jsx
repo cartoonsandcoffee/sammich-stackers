@@ -624,8 +624,8 @@ const gameReducer = (state, action) => {
           opponentFinalScore: scores.flavor,
           opponentFinished: true,
           currentTurn: 'player',
-          message: `${state.opponentName} finished with ${scores.flavor} flavor! Your turn
-};
+          message: `${state.opponentName} finished with ${scores.flavor} flavor! Your turn.`
+		};
       }
       
       const newCard = decision.card;
@@ -1281,8 +1281,7 @@ export default function SammichStackers() {
                           <div className={styles.shopCardStats}>
                             {cardData.category && <div className={styles.shopCardCategory}>{cardData.category}</div>}
                             <div>🍽️ {cardData.flavor + (card.permanentFlavorBonus || 0)}{card.permanentFlavorBonus > 0 && <span className="text-pickle-green"> (+{card.permanentFlavorBonus})</span>}</div>
-                            <div
-<div>🤢 {cardData.yuck}</div>
+							<div>🤢 {cardData.yuck}</div>
                             <div>💵 {cardData.cash}</div>
                           </div>
                           {cardData.ability && <div className={styles.shopCardAbility}>{cardData.ability}</div>}

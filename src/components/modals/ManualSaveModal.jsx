@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from '../styles';
+import styles from '../../styles';
 
 export const ManualSaveModal = ({ show, onClose, manualSaveData, manualSaveJson }) => {
   if (!show) return null;

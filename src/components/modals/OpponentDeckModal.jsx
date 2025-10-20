@@ -1,7 +1,7 @@
 import React from 'react';
 import { X } from 'lucide-react';
-import { CARD_DATABASE } from '../cardData';
-import styles from '../styles';
+import { CARD_DATABASE } from '../../cardData';
+import styles from '../../styles';
 
 export const OpponentDeckModal = ({ show, onClose, opponentDeck, opponentSandwich }) => {
   if (!show) return null;

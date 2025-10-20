@@ -323,7 +323,7 @@ export default function SammichStackers() {
                     disabled={state.playerFinished || state.currentTurn !== 'player'}
                     className={styles.buttonSecondary}
                   >
-                    🍞 Finish
+                    🍞 Play Bread & Finish
                   </button>
                   <button onClick={() => setShowDeck(true)} className={styles.buttonSmall}>
                     <Eye size={12} className="inline mr-1" /> View Deck
@@ -334,14 +334,6 @@ export default function SammichStackers() {
                 </button>
               </div>
             </div>
-            
-            {state.currentTurn === 'done' && (
-              <div className="text-center">
-                <button onClick={() => dispatch({ type: 'END_ROUND' })} className={styles.buttonPrimary}>
-                  See Results
-                </button>
-              </div>
-            )}
           </div>
         )}
         

@@ -210,13 +210,43 @@ export const gameReducer = (state, action) => {
       );
       
       if (decision.action === 'finish') {
-        const finalScores = calculateScores(state.opponentSandwich, 0);
+        const finalSandwich = [...state.opponentSandwich, state.opponentBreadCard];
+        const finalScores = calculateScores(finalSandwich, 0);
+        
+        // If player already finished, calculate result and go to round_end
+        if (state.playerFinished) {
+          const playerScore = state.playerFinalScore;
+          const opponentScore = finalScores.flavor;
+          
+          let result;
+          if (playerScore > opponentScore) {
+            result = 'win';
+          } else if (playerScore < opponentScore) {
+            result = 'loss';
+          } else {
+            result = 'tie';
+          }
+          
+          return {
+            ...state,
+            opponentSandwich: finalSandwich,
+            opponentFinished: true,
+            opponentFinalScore: finalScores.flavor,
+            phase: 'round_end',
+            roundResult: result,
+            currentTurn: 'done',
+            message: result === 'win' ? 'You win!' : result === 'loss' ? 'You lose!' : 'Tie game!'
+          };
+        }
+        
+        // Player hasn't finished yet, opponent waits
         return {
           ...state,
+          opponentSandwich: finalSandwich,
           opponentFinished: true,
           opponentFinalScore: finalScores.flavor,
-          currentTurn: 'done',
-          message: "Opponent finished!"
+          currentTurn: 'player',
+          message: `Opponent finished with ${finalScores.flavor} flavor! Your turn.`
         };
       }
       

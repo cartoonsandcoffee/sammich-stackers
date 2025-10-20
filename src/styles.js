@@ -17,8 +17,8 @@ export const styles = {
   playerAreaActive: "rounded-2xl p-4 sm:p-6 border-4 bg-gradient-to-br from-teal-400 to-green-400 border-gray-800 shadow-lg transition-all duration-300",
   playerAreaInactive: "rounded-2xl p-4 sm:p-6 border-4 bg-gray-300 border-gray-500 opacity-80 transition-all duration-300",
   opponentArea: "rounded-cafeteria shadow-tray p-4 sm:p-6 border-4 transition-all duration-300",
-  opponentAreaActive: "bg-gradient-to-br from-ketchup-red to-bubblegum-pink border-chalkboard",
-  opponentAreaInactive: "bg-gradient-to-br from-gray-200 to-gray-300 border-gray-500 opacity-80",
+  opponentAreaActive: "rounded-2xl p-4 sm:p-6 border-4 bg-gradient-to-br from-red-400 to-pink-400 border-gray-800 shadow-lg transition-all duration-300",
+  opponentAreaInactive: "rounded-2xl p-4 sm:p-6 border-4 bg-gray-300 border-gray-500 opacity-80 transition-all duration-300",
   
   playerHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2",
   playerName: "text-xl sm:text-2xl font-display text-chalkboard drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]",

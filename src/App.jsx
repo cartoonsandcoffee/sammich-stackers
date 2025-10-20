@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { Eye, Clock, CheckCircle } from 'lucide-react';
+import { Eye, Clock, CheckCircle, Edit2 } from 'lucide-react';
 import { CARD_DATABASE, createCard, createStarterDeck, getOpponentName } from './cardData';
 import { calculateScores, generateBotDeck } from './gameLogic';
 import { fetchOpponentDeck, saveWinningDeck } from './supabase';
@@ -91,7 +91,9 @@ export default function SammichStackers() {
   const [showDeck, setShowDeck] = useState(false);
   const [showOpponentDeck, setShowOpponentDeck] = useState(false);
   const [showRemoveCard, setShowRemoveCard] = useState(false);
+  const [showChangeUsername, setShowChangeUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
+  const [newUsernameInput, setNewUsernameInput] = useState('');
   
   useEffect(() => {
     const savedDeck = localStorage.getItem('sammich_deck');
@@ -165,6 +167,20 @@ export default function SammichStackers() {
     const coldestCutBonus = state.playerColdestCut ? 5 : 0;
     return { total: cashFromCards + winBonus + coldestCutBonus, cashFromCards, winBonus, coldestCutBonus };
   };
+
+  const handleAbandonRun = () => {
+    if (confirm('Are you sure you want to abandon your run? All progress will be lost!')) {
+      dispatch({ type: 'ABANDON_RUN' });
+    }
+  };
+
+  const handleChangeUsername = () => {
+    if (newUsernameInput.trim()) {
+      dispatch({ type: 'CHANGE_USERNAME', username: newUsernameInput.trim() });
+      setShowChangeUsername(false);
+      setNewUsernameInput('');
+    }
+  };
   
   return (
     <div className={styles.page}>
@@ -177,6 +193,15 @@ export default function SammichStackers() {
               <span className={styles.statBadge}>🏆 {state.wins}</span>
               <span className={styles.statBadge}>💔 {state.losses}</span>
               <span className={styles.statBadge}>🎯 Match {state.matchNumber}</span>
+              {state.username && (
+                <button 
+                  onClick={() => setShowChangeUsername(true)}
+                  className={styles.buttonSmall}
+                  title="Change Username"
+                >
+                  <Edit2 size={12} className="inline mr-1" /> {state.username}
+                </button>
+              )}
             </div>
             <div className={styles.messageBox}>{state.message}</div>
           </div>
@@ -231,9 +256,9 @@ export default function SammichStackers() {
                     <span className="font-bold">Final: {state.opponentFinalScore} flavor</span>
                   ) : (
                     <>
-                      <span title="Flavor">🍽️ {opponentScores.flavor}</span>
-                      <span title="Yuck" className={opponentScores.yuck >= 3 ? 'text-red-600' : ''}>🤢 {opponentScores.yuck}</span>
-                      <span title="Cash">💵 {opponentScores.cash}</span>
+                      <span title="Flavor" className="text-xl">🍽️ {opponentScores.flavor}</span>
+                      <span title="Yuck" className={`text-xl ${opponentScores.yuck >= 3 ? 'text-red-600' : ''}`}>🤢 {opponentScores.yuck}</span>
+                      <span title="Cash" className="text-xl">💵 {opponentScores.cash}</span>
                       <button onClick={() => setShowOpponentDeck(true)} className={styles.buttonSmall}>
                         <Eye size={12} className="inline mr-1" /> Deck
                       </button>
@@ -259,9 +284,9 @@ export default function SammichStackers() {
                     <span className="font-bold">Score: {state.playerFinalScore}</span>
                   ) : (
                     <>
-                      <span title="Flavor">🍽️ {playerScores.flavor}</span>
-                      <span title="Yuck" className={playerScores.yuck >= 3 ? 'text-red-600' : ''}>🤢 {playerScores.yuck}</span>
-                      <span title="Cash">💵 {playerScores.cash}</span>
+                      <span title="Flavor" className="text-xl">🍽️ {playerScores.flavor}</span>
+                      <span title="Yuck" className={`text-xl ${playerScores.yuck >= 3 ? 'text-red-600' : ''}`}>🤢 {playerScores.yuck}</span>
+                      <span title="Cash" className="text-xl">💵 {playerScores.cash}</span>
                     </>
                   )}
                 </div>
@@ -274,100 +299,88 @@ export default function SammichStackers() {
               
               {state.nextCardPreview && (
                 <div className={styles.previewBox}>
-                  🍅 Next: <strong>{state.nextCardPreview.name}</strong>
+                  🔮 Next Card: {state.nextCardPreview}
                 </div>
               )}
               
-              {!state.playerFinished && (
-                <div className="flex flex-col sm:flex-row gap-2">
+              {state.playerFinished && (
+                <div className={styles.finishedBox}>
+                  <div className={styles.finishedText}>Waiting for opponent...</div>
+                </div>
+              )}
+              
+              <div className="flex justify-between items-center mt-4">
+                <div className="flex gap-2">
                   <button
                     onClick={() => dispatch({ type: 'FLIP_CARD' })}
-                    disabled={state.playerDeck.length === 0 || state.currentTurn !== 'player'}
+                    disabled={state.playerFinished || state.currentTurn !== 'player' || state.playerDeck.length === 0}
                     className={styles.buttonPrimary}
                   >
-                    {state.currentTurn === 'player' ? `Flip Card (${state.playerDeck.length})` : 'Opponent\'s Turn...'}
+                    🎲 Flip Card ({state.playerDeck.length})
                   </button>
-                  <button 
-                    onClick={() => dispatch({ type: 'PLAY_BREAD' })} 
-                    disabled={state.currentTurn !== 'player'}
+                  <button
+                    onClick={() => dispatch({ type: 'PLAY_BREAD' })}
+                    disabled={state.playerFinished || state.currentTurn !== 'player'}
                     className={styles.buttonSecondary}
                   >
-                    Play Bread & Finish
+                    🍞 Finish
                   </button>
                   <button onClick={() => setShowDeck(true)} className={styles.buttonSmall}>
-                    <Eye size={14} className="inline mr-1" /> View Deck
+                    <Eye size={12} className="inline mr-1" /> View Deck
                   </button>
                 </div>
-              )}
-              
-              {state.playerFinished && !state.opponentFinished && (
-                <div className={styles.finishedBox}>
-                  <span className={styles.finishedText}>You finished! Watching opponent...</span>
-                </div>
-              )}
+                <button onClick={handleAbandonRun} className={styles.buttonDanger}>
+                  ⚠️ Abandon Run
+                </button>
+              </div>
             </div>
+            
+            {state.currentTurn === 'done' && (
+              <div className="text-center">
+                <button onClick={() => dispatch({ type: 'END_ROUND' })} className={styles.buttonPrimary}>
+                  See Results
+                </button>
+              </div>
+            )}
           </div>
         )}
         
         {state.phase === 'round_end' && (
           <div className={styles.victoryContainer}>
-            <h2 className={`${styles.victoryTitle} ${
-              state.roundResult === 'win' ? styles.victoryWin :
-              state.roundResult === 'loss' ? styles.victoryLoss :
-              styles.victoryTie
-            }`}>
-              {state.roundResult === 'win' && '🎉 Win! 🎉'}
-              {state.roundResult === 'loss' && '😞 Loss 😞'}
-              {state.roundResult === 'tie' && '🤝 Tie! 🤝'}
+            <h2 className={`${styles.victoryTitle} ${state.roundResult === 'win' ? styles.victoryWin : state.roundResult === 'loss' ? styles.victoryLoss : styles.victoryTie}`}>
+              {state.roundResult === 'win' ? '🎉 Victory!' : state.roundResult === 'loss' ? '💔 Defeat' : '🤝 Tie Game!'}
             </h2>
-            <p className={styles.victorySubtitle}>Match {state.matchNumber}</p>
+            <p className={styles.victorySubtitle}>
+              Your Score: {state.playerFinalScore} | Opponent: {state.opponentFinalScore}
+            </p>
             
-            {state.roundResult !== 'loss' && (
-              <div className={styles.cashEarnedBox}>
-                <div className={styles.cashEarnedTitle}>
-                  💰 Cash Earned: ${calculateCashEarned().total}
+            {(state.roundResult === 'win' || state.roundResult === 'tie') && (
+              <>
+                <div className={styles.cashEarnedBox}>
+                  <div className={styles.cashEarnedTitle}>
+                    💰 +${calculateCashEarned().total} Earned!
+                  </div>
+                  <div className={styles.cashEarnedDetails}>
+                    Cards: +${calculateCashEarned().cashFromCards} | 
+                    {state.roundResult === 'win' ? ' Win' : ' Tie'}: +${calculateCashEarned().winBonus}
+                    {state.playerColdestCut && ' | Coldest Cut: +$5'}
+                  </div>
                 </div>
-                <div className={styles.cashEarnedDetails}>
-                  Cards: ${calculateCashEarned().cashFromCards} | {state.roundResult === 'win' ? 'Win' : 'Tie'}: ${calculateCashEarned().winBonus}{calculateCashEarned().coldestCutBonus > 0 ? ` | Coldest Cut: $${calculateCashEarned().coldestCutBonus}` : ''}
-                </div>
-              </div>
+                
+                {state.playerColdestCut && (
+                  <div className={styles.coldestCutBox}>
+                    <div className={styles.coldestCutTitle}>❄️ Coldest Cut! ❄️</div>
+                    <div className={styles.coldestCutText}>You played every card in your deck!</div>
+                  </div>
+                )}
+              </>
             )}
             
-{state.playerColdestCut && (
-              <div className={styles.coldestCutBox}>
-                <div className={styles.coldestCutTitle}>❄️ COLDEST CUT! ❄️</div>
-                <div className={styles.coldestCutText}>Played every card in your deck! +$5 Bonus</div>
-              </div>
-            )}
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className={`${styles.playerAreaActive} text-center`}>
-                <h3 className={styles.playerName}>{state.playerName}</h3>
-                <div className="my-3">
-                  <span className="text-4xl font-display">{state.playerFinalScore}</span>
-                </div>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {state.playerSandwich.map((card, i) => (
-                    <CardDisplay key={card.id} card={card} sandwich={state.playerSandwich} position={i} permanentBreadBonus={state.permanentBreadBonus} />
-                  ))}
-                </div>
-              </div>
-              
-              <div className={`${styles.opponentAreaActive} text-center`}>
-                <h3 className={styles.playerName}>{opponentName}</h3>
-                <div className="my-3">
-                  <span className="text-4xl font-display">{state.opponentFinalScore}</span>
-                </div>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {state.opponentSandwich.map((card, i) => (
-                    <CardDisplay key={card.id} card={card} sandwich={state.opponentSandwich} position={i} permanentBreadBonus={0} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <button onClick={() => dispatch({ type: 'CLAIM_REWARD' })} className={styles.buttonPrimary}>
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => state.roundResult === 'loss' ? dispatch({ type: 'SET_USERNAME', username: state.username }) : dispatch({ type: 'CLAIM_REWARD' })}
+                className={styles.buttonPrimary}
+              >
                 {state.roundResult === 'loss' ? 'Start Over' : 'Shop'}
               </button>
               <button onClick={() => alert('Share coming soon!')} className={styles.buttonSecondary}>
@@ -400,12 +413,12 @@ export default function SammichStackers() {
                       {card.category && <div className={styles.shopCardCategory}>{card.category}</div>}
                       <div>🍽️ {card.flavor} | 🤢 {card.yuck}</div>
                       <div>💵 {card.cash}</div>
+                      {card.ability && <div className={styles.shopCardAbility}>{card.ability}</div>}
                     </div>
-                    {card.ability && <div className={styles.shopCardAbility}>{card.ability}</div>}
                     <button
                       onClick={() => dispatch({ type: 'BUY_CARD', cardName: card.name, cardData: card })}
                       disabled={!canAfford}
-                      className={`${canAfford ? styles.buttonPrimary : styles.buttonSmall} w-full text-sm py-2 mt-2`}
+                      className={`${canAfford ? styles.buttonPrimary : styles.buttonSmall} w-full text-sm py-2 mt-auto`}
                     >
                       {canAfford ? `$${card.cost}` : `Need $${card.cost - state.cash}`}
                     </button>
@@ -419,7 +432,6 @@ export default function SammichStackers() {
           </div>
         )}
         
-        {/* Modals - now using extracted components */}
         <DeckModal 
           show={showDeck}
           onClose={() => setShowDeck(false)}
@@ -447,6 +459,39 @@ export default function SammichStackers() {
           manualSaveData={state.manualSaveData}
           manualSaveJson={state.manualSaveJson}
         />
+
+        {showChangeUsername && (
+          <div className={styles.modalOverlay} onClick={() => setShowChangeUsername(false)}>
+            <div className={styles.modalContainer} onClick={(e) => e.stopPropagation()} style={{maxWidth: '400px'}}>
+              <div className={styles.modalHeader}>
+                <h3 className={styles.modalTitle}>Change Username</h3>
+                <button onClick={() => setShowChangeUsername(false)} className={styles.modalClose}>✕</button>
+              </div>
+              <div className={styles.modalContent}>
+                <input
+                  type="text"
+                  value={newUsernameInput}
+                  onChange={(e) => setNewUsernameInput(e.target.value)}
+                  placeholder="New username"
+                  maxLength={20}
+                  className={styles.usernameInput}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleChangeUsername();
+                    }
+                  }}
+                />
+                <button
+                  onClick={handleChangeUsername}
+                  disabled={!newUsernameInput.trim()}
+                  className={`${styles.buttonPrimary} w-full mt-4`}
+                >
+                  Update Username
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

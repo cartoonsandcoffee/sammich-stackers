@@ -16,8 +16,8 @@ export const CARD_DATABASE = {
   'Lean Beef': { name: 'Lean Beef', flavor: 1, yuck: 0, cash: 0, cost: 12, category: 'Meat', ability: 'Flavor doubles per beef' },
   'Tar tar sauce': { name: 'Tar tar sauce', flavor: 0, yuck: 0, cash: 0, cost: 4, ability: 'Cancels 1 yuck, +1 per fish' },
   'Tomato': { name: 'Tomato', flavor: 1, yuck: 0, cash: 2, cost: 6, ability: 'Shows next card' },
-  'Sticky Onions': { name: 'Sticky Onions', flavor: 3, yuck: 0, cash: 2, cost: 7, ability: 'Never last (auto-draw)' },
-  'Pickles': { name: 'Pickles', flavor: 2, yuck: 0, cash: 0, cost: 10, ability: 'x2 flavor per yuck' },
+  'Sticky Onions': { name: 'Sticky Onions', flavor: 3, yuck: 0, cash: 2, cost: 7, ability: 'Never last (auto-draw next fixin)' },
+  'Pickles': { name: 'Pickles', flavor: 2, yuck: 0, cash: 0, cost: 10, ability: 'Flavor increases quadratically for each yuck' },
   'Cheddar Slices': { name: 'Cheddar Slices', flavor: 1, yuck: 0, cash: 1, cost: 4, category: 'Cheese' },
   'Salty Sardines': { name: 'Salty Sardines', flavor: 0, yuck: 1, cash: 0, cost: 8, category: 'Fish', ability: 'Bread +1 flavor permanently' }
 };

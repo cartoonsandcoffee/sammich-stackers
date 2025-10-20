@@ -22,7 +22,7 @@ export const styles = {
   
   playerHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2",
   playerName: "text-xl sm:text-2xl font-display text-chalkboard drop-shadow-[0_2px_2px_rgba(255,255,255,0.8)]",
-  playerStats: "flex gap-3 items-center text-sm sm:text-base font-bold",
+  playerStats: "flex gap-3 items-center text-base sm:text-lg font-bold bg-white/80 px-4 py-2 rounded-xl border-3 border-chalkboard shadow-card",
   
   // Cards
   cardContainer: "flex flex-wrap gap-2 mb-3",
@@ -53,12 +53,12 @@ export const styles = {
   modalClose: "text-milk-carton hover:text-mustard-yellow transition-colors",
   
   // Shop
-  shopCard: "border-4 border-chalkboard rounded-cafeteria p-3 relative bg-milk-carton shadow-card hover:shadow-tray hover:scale-105 transition-all",
-  shopCardDisabled: "border-4 border-gray-400 rounded-cafeteria p-3 relative bg-gray-200 opacity-60",
+  shopCard: "border-4 border-chalkboard rounded-cafeteria p-3 relative bg-milk-carton shadow-card hover:shadow-tray hover:scale-105 transition-all flex flex-col min-h-[200px]",
+  shopCardDisabled: "border-4 border-gray-400 rounded-cafeteria p-3 relative bg-gray-200 opacity-60 flex flex-col min-h-[200px]",
   shopBadge: "absolute -top-2 -right-2 bg-pickle-green text-milk-carton rounded-full w-7 h-7 flex items-center justify-center text-sm font-display border-3 border-chalkboard",
   shopCardTitle: "font-display text-sm sm:text-base text-chalkboard mb-2",
   shopCardCategory: "text-grape-juice text-xs font-bold",
-  shopCardStats: "text-xs sm:text-sm my-1",
+  shopCardStats: "text-xs sm:text-sm my-1 flex-grow",
   shopCardAbility: "text-gray-700 italic text-xs my-2 min-h-[2em]",
   
   // Victory screen
@@ -89,7 +89,7 @@ export const styles = {
   
   // Indicators
   checkIcon: "text-pickle-green",
-  clockIcon: "text-neon-orange animate-pulse",
+  clockIcon: "text-yellow-400 animate-pulse drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]",
   
   // Deck view
   deckGrid: "grid grid-cols-2 sm:grid-cols-3 gap-3",

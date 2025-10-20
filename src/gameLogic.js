@@ -85,10 +85,10 @@ export const calculateScores = (sandwich, permanentBreadBonus = 0) => {
   // Apply yuck cancelers
   yuck = Math.max(0, yuck - yuckCancelers);
   
-  // Pickles bonus (after yuck cancellation)
+  // Pickles quadratic bonus (after yuck cancellation)
   sandwich.forEach(card => {
     if (card.name === 'Pickles') {
-      const picklesBonus = 2 * yuck * 2;
+      const picklesBonus = yuck * yuck * 2;
       flavor += picklesBonus;
     }
   });

@@ -186,6 +186,9 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
           🍽️ Flavor: {cardData.flavor}
           {card.permanentFlavorBonus > 0 && ` + ${card.permanentFlavorBonus} ★`}
           {card.name === 'Bread' && permanentBreadBonus > 0 && ` + ${permanentBreadBonus} (Sardines)`}
+		  {showCalculatedFlavor && calculatedFlavor !== null && calculatedFlavor !== (cardData.flavor + (card.permanentFlavorBonus || 0)) && (
+			<span className="text-pickle-green font-bold"> = {calculatedFlavor} total</span>
+		  )}		  
         </div>
         <div>🤢 Yuck: {cardData.yuck}</div>
         <div>💵 Cash: {cardData.cash}</div>

@@ -139,7 +139,85 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
     return sources;
   };
   
-  const bonusSources = getBonusSources();
+  // Get detailed flavor breakdown for tooltip
+  const getFlavorBreakdown = () => {
+    if (!sandwich || position === undefined || calculatedFlavor === null) return null;
+    
+    const breakdown = [];
+    const baseFlavor = cardData.flavor + (card.permanentFlavorBonus || 0);
+    
+    if (baseFlavor !== 0) {
+      breakdown.push(`Base: ${baseFlavor}`);
+    }
+    
+    // Bread bonus
+    if (card.name === 'Bread' && permanentBreadBonus > 0) {
+      breakdown.push(`+${permanentBreadBonus} Sardines`);
+    }
+    
+    // Tar tar sauce
+    if (card.name === 'Tar tar sauce') {
+      const fishCount = sandwich.filter(c => CARD_DATABASE[c.name].category === 'Fish').length;
+      if (fishCount > 0) breakdown.push(`+${fishCount} Fish`);
+    }
+    
+    // Beefy Balogna
+    if (card.name === 'Beefy Balogna') {
+      const otherBaloneys = sandwich.filter((c, i) => c.name === 'Beefy Balogna' && i !== position).length;
+      if (otherBaloneys > 0) breakdown.push(`+${otherBaloneys} Other Balogna`);
+    }
+    
+    // Ham
+    if (card.name === 'Ham') {
+      const cheeseCount = sandwich.filter(c => CARD_DATABASE[c.name].category === 'Cheese').length;
+      if (cheeseCount > 0) breakdown.push(`+${cheeseCount * 2} Cheese (${cheeseCount}×2)`);
+    }
+    
+    // Mayonaise
+    if (card.name === 'Mayonaise') {
+      const prevCard = position > 0 ? sandwich[position - 1] : null;
+      const nextCard = position < sandwich.length - 1 ? sandwich[position + 1] : null;
+      if ((prevCard && prevCard.name === 'Bread') || (nextCard && nextCard.name === 'Bread')) {
+        breakdown.push(`+20 Adjacent Bread`);
+      }
+    }
+    
+    // Lean Beef
+    if (card.name === 'Lean Beef') {
+      const leanBeefCount = sandwich.filter((c, i) => c.name === 'Lean Beef' && i <= position).length;
+      if (leanBeefCount > 1) {
+        const multiplier = Math.pow(2, leanBeefCount - 1);
+        breakdown.push(`×${multiplier} Beef Stack`);
+      }
+    }
+    
+    // Pickles
+    if (card.name === 'Pickles') {
+      const scores = calculateScores(sandwich, permanentBreadBonus);
+      if (scores.yuck > 0) {
+        const picklesBonus = scores.yuck * scores.yuck * 2;
+        breakdown.push(`+${picklesBonus} Yuck (${scores.yuck}²×2)`);
+      }
+    }
+    
+    // Jelly
+    if (card.name === 'Jelly') {
+      const prevCard = position > 0 ? sandwich[position - 1] : null;
+      const nextCard = position < sandwich.length - 1 ? sandwich[position + 1] : null;
+      if ((prevCard && prevCard.name === 'Peanut Butter') || (nextCard && nextCard.name === 'Peanut Butter')) {
+        breakdown.push(`+2 Peanut Butter`);
+      }
+    }
+    
+    // Spiced Ham buff
+    if (position > 0 && sandwich[position - 1].name === 'Spiced Ham') {
+      breakdown.push(`+1 Spiced Ham`);
+    }
+    
+    return breakdown.length > 1 ? breakdown : null;
+  };
+  
+  const flavorBreakdown = getFlavorBreakdown();
   
   // Calculate what this card's flavor would be in current context (for tooltip)
   const getCardFlavorExplanation = () => {

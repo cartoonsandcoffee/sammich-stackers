@@ -243,30 +243,32 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
           </div>
         )}
       </div>
-      
-      {/* Tooltip */}
-      <div className={styles.tooltip}>
-        <div className={styles.tooltipTitle}>{card.name}</div>
-        {cardData.category && (
-          <div className={styles.tooltipCategory}>{cardData.category}</div>
-        )}
-        <div>
-          🍽️ Flavor: {cardData.flavor}
-          {card.permanentFlavorBonus > 0 && ` + ${card.permanentFlavorBonus} ★`}
-          {card.name === 'Bread' && permanentBreadBonus > 0 && ` + ${permanentBreadBonus} (Sardines)`}
-        </div>
-        <div>🤢 Yuck: {cardData.yuck}</div>
-        <div>💵 Cash: {cardData.cash}</div>
-        {cardData.cost && <div>💰 Cost: ${cardData.cost}</div>}
-        {cardData.ability && (
-          <div className={styles.tooltipAbility}>{cardData.ability}</div>
-        )}
-        {flavorExplanation && (
-          <div className="mt-2 text-xs border-t border-milk-carton/30 pt-2">
-            In Sandwich: {flavorExplanation}
-          </div>
-        )}
-      </div>
+ 
+	  {/* Tooltip */}
+	  <div className={styles.tooltip}>
+	    <div className={styles.tooltipTitle}>{card.name}</div>
+    	  {cardData.category && (
+			<div className={styles.tooltipCategory}>{cardData.category}</div>
+		)}
+		<div>
+			🍽️ Flavor: {calculatedFlavor !== null ? calculatedFlavor : (cardData.flavor + (card.permanentFlavorBonus || 0))}
+			{calculatedFlavor !== null && calculatedFlavor !== (cardData.flavor + (card.permanentFlavorBonus || 0)) && (
+				<span className="text-metal-gray"> (Base: {cardData.flavor + (card.permanentFlavorBonus || 0)})</span>
+			)}
+		</div>
+		<div>🤢 Yuck: {cardData.yuck}</div>
+		<div>💵 Cash: {cardData.cash}</div>
+		{cardData.cost && <div>💰 Cost: ${cardData.cost}</div>}
+		{cardData.ability && (
+			<div className={styles.tooltipAbility}>{cardData.ability}</div>
+		)}
+		{bonusSources.length > 0 && (
+			<div className="mt-2 text-xs border-t border-milk-carton/30 pt-2 text-mustard-yellow">
+			Bonuses: {bonusSources.join(', ')}
+			</div>
+		)}
+	  </div> 
+	  	  
     </div>
   );
 };

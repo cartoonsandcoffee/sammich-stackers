@@ -145,7 +145,14 @@ export default function SammichStackers() {
       save();
     }
   }, [state.phase, state.roundResult]);
-  
+ 
+  // Trigger END_ROUND when both players finish
+  useEffect(() => {
+	if (state.phase === 'playing' && state.playerFinished && state.opponentFinished && state.currentTurn === 'done') {
+	  dispatch({ type: 'END_ROUND' });
+	}
+   }, [state.playerFinished, state.opponentFinished, state.currentTurn, state.phase]);
+
   useEffect(() => {
     if (state.phase === 'playing' && state.currentTurn === 'opponent' && !state.opponentFinished) {
       const timer = setTimeout(() => {

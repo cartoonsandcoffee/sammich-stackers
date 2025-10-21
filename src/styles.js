@@ -33,7 +33,7 @@ export const styles = {
   cardStar: "text-pickle-green text-xl",
   
   // Tooltip
-  tooltip: "absolute z-50 bg-chalkboard text-milk-carton text-xs rounded-xl p-3 -top-32 left-0 w-64 shadow-tray opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border-3 border-milk-carton",
+  tooltip: "absolute z-[9999] bg-chalkboard text-milk-carton text-xs rounded-xl p-3 -top-36 left-0 w-64 shadow-tray opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border-3 border-milk-carton",
   tooltipTitle: "font-display text-base mb-2 text-mustard-yellow",
   tooltipCategory: "text-bubblegum-pink text-xs mb-1",
   tooltipAbility: "text-mustard-yellow mt-2 italic",

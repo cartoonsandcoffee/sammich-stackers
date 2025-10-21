@@ -348,50 +348,75 @@ export default function SammichStackers() {
           </div>
         )}
         
-        {state.phase === 'round_end' && (
-          <div className={styles.victoryContainer}>
-            <h2 className={`${styles.victoryTitle} ${state.roundResult === 'win' ? styles.victoryWin : state.roundResult === 'loss' ? styles.victoryLoss : styles.victoryTie}`}>
-              {state.roundResult === 'win' ? '🎉 Victory!' : state.roundResult === 'loss' ? '💔 Defeat' : '🤝 Tie Game!'}
-            </h2>
-            <p className={styles.victorySubtitle}>
-              Your Score: {state.playerFinalScore} | Opponent: {state.opponentFinalScore}
-            </p>
-            
-            {(state.roundResult === 'win' || state.roundResult === 'tie') && (
-              <>
-                <div className={styles.cashEarnedBox}>
-                  <div className={styles.cashEarnedTitle}>
-                    💰 +${calculateCashEarned().total} Earned!
-                  </div>
-                  <div className={styles.cashEarnedDetails}>
-                    Cards: +${calculateCashEarned().cashFromCards} | 
-                    {state.roundResult === 'win' ? ' Win' : ' Tie'}: +${calculateCashEarned().winBonus}
-                    {state.playerColdestCut && ' | Coldest Cut: +$5'}
-                  </div>
-                </div>
-                
-                {state.playerColdestCut && (
-                  <div className={styles.coldestCutBox}>
-                    <div className={styles.coldestCutTitle}>❄️ Coldest Cut! ❄️</div>
-                    <div className={styles.coldestCutText}>You played every card in your deck!</div>
-                  </div>
-                )}
-              </>
-            )}
-            
-            <div className="flex gap-3 justify-center">
-              <button
-                onClick={() => state.roundResult === 'loss' ? dispatch({ type: 'SET_USERNAME', username: state.username }) : dispatch({ type: 'CLAIM_REWARD' })}
-                className={styles.buttonPrimary}
-              >
-                {state.roundResult === 'loss' ? 'Start Over' : 'Shop'}
-              </button>
-              <button onClick={() => alert('Share coming soon!')} className={styles.buttonSecondary}>
-                📤 Share
-              </button>
-            </div>
-          </div>
-        )}
+		{state.phase === 'round_end' && (
+		  <div className={styles.victoryContainer}>
+			<h2 className={`${styles.victoryTitle} ${state.roundResult === 'win' ? styles.victoryWin : state.roundResult === 'loss' ? styles.victoryLoss : styles.victoryTie}`}>
+			  {state.roundResult === 'win' ? '🎉 Victory!' : state.roundResult === 'loss' ? '💔 Defeat' : '🤝 Tie Game!'}
+			</h2>
+			<p className={styles.victorySubtitle}>Match {state.matchNumber}</p>
+			
+			{(state.roundResult === 'win' || state.roundResult === 'tie') && (
+			  <>
+				<div className={styles.cashEarnedBox}>
+				  <div className={styles.cashEarnedTitle}>
+					💰 Cash Earned: ${calculateCashEarned().total}
+				  </div>
+				  <div className={styles.cashEarnedDetails}>
+					Cards: ${calculateCashEarned().cashFromCards} | 
+					{state.roundResult === 'win' ? ' Win' : ' Tie'}: ${calculateCashEarned().winBonus}
+					{calculateCashEarned().coldestCutBonus > 0 && ` | Coldest Cut: $${calculateCashEarned().coldestCutBonus}`}
+				  </div>
+				</div>
+				
+				{state.playerColdestCut && (
+				  <div className={styles.coldestCutBox}>
+					<div className={styles.coldestCutTitle}>❄️ COLDEST CUT! ❄️</div>
+					<div className={styles.coldestCutText}>Played every card in your deck! +$5 Bonus</div>
+				  </div>
+				)}
+			  </>
+			)}
+			
+			{/* SANDWICH DISPLAY - THIS WAS MISSING */}
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+			  <div className={`${styles.playerAreaActive} text-center`}>
+				<h3 className={styles.playerName}>{state.playerName}</h3>
+				<div className="my-3">
+				  <span className="text-4xl font-display">{state.playerFinalScore}</span>
+				</div>
+				<div className="flex flex-wrap gap-2 justify-center">
+				  {state.playerSandwich.map((card, i) => (
+					<CardDisplay key={card.id} card={card} sandwich={state.playerSandwich} position={i} permanentBreadBonus={state.permanentBreadBonus} />
+				  ))}
+				</div>
+			  </div>
+			  
+			  <div className={`${styles.opponentAreaActive} text-center`}>
+				<h3 className={styles.playerName}>{state.opponentName}</h3>
+				<div className="my-3">
+				  <span className="text-4xl font-display">{state.opponentFinalScore}</span>
+				</div>
+				<div className="flex flex-wrap gap-2 justify-center">
+				  {state.opponentSandwich.map((card, i) => (
+					<CardDisplay key={card.id} card={card} sandwich={state.opponentSandwich} position={i} permanentBreadBonus={0} />
+				  ))}
+				</div>
+			  </div>
+			</div>
+			
+			<div className="flex gap-3 justify-center">
+			  <button
+				onClick={() => dispatch({ type: 'CLAIM_REWARD' })}
+				className={styles.buttonPrimary}
+			  >
+				{state.roundResult === 'loss' ? 'Start Over' : 'Shop'}
+			  </button>
+			  <button onClick={() => alert('Share coming soon!')} className={styles.buttonSecondary}>
+				📤 Share
+			  </button>
+			</div>
+		  </div>
+		)}
         
         {state.phase === 'shop' && (
           <div className={styles.victoryContainer}>
@@ -498,7 +523,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.0</div>
+      <div className={styles.versionBadge}>v1.0.1</div>
     </div>
   );
 }

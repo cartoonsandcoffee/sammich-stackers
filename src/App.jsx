@@ -377,7 +377,7 @@ export default function SammichStackers() {
 			  </>
 			)}
 			
-			{/* SANDWICH DISPLAY - THIS WAS MISSING */}
+			{/* SANDWICH DISPLAY WITH CALCULATED FLAVOR VALUES */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
 			  <div className={`${styles.playerAreaActive} text-center`}>
 				<h3 className={styles.playerName}>{state.playerName}</h3>
@@ -386,7 +386,14 @@ export default function SammichStackers() {
 				</div>
 				<div className="flex flex-wrap gap-2 justify-center">
 				  {state.playerSandwich.map((card, i) => (
-					<CardDisplay key={card.id} card={card} sandwich={state.playerSandwich} position={i} permanentBreadBonus={state.permanentBreadBonus} />
+					<CardDisplay 
+					  key={card.id} 
+					  card={card} 
+					  sandwich={state.playerSandwich} 
+					  position={i} 
+					  permanentBreadBonus={state.permanentBreadBonus}
+					  showCalculatedFlavor={true}
+					/>
 				  ))}
 				</div>
 			  </div>
@@ -398,7 +405,14 @@ export default function SammichStackers() {
 				</div>
 				<div className="flex flex-wrap gap-2 justify-center">
 				  {state.opponentSandwich.map((card, i) => (
-					<CardDisplay key={card.id} card={card} sandwich={state.opponentSandwich} position={i} permanentBreadBonus={0} />
+					<CardDisplay 
+					  key={card.id} 
+					  card={card} 
+					  sandwich={state.opponentSandwich} 
+					  position={i} 
+					  permanentBreadBonus={0}
+					  showCalculatedFlavor={true}
+					/>
 				  ))}
 				</div>
 			  </div>
@@ -523,7 +537,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.1</div>
+      <div className={styles.versionBadge}>v1.0.2</div>
     </div>
   );
 }

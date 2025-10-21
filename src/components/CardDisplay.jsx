@@ -70,7 +70,7 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
     return calculatedFlavor;
   };
   
-  const calculatedFlavor = showCalculatedFlavor ? getCalculatedFlavor() : null;
+  const calculatedFlavor = (sandwich && position !== undefined) ? getCalculatedFlavor() : null;
   
   // Get list of cards providing bonuses to this card
   const getBonusSources = () => {

@@ -1,7 +1,7 @@
 // Tailwind CSS class strings - 90s cafeteria aesthetic
 const styles = {
   // Layout
-  page: "min-h-screen bg-gradient-to-br from-linoleum via-tile-beige to-mustard-yellow/30",
+  page: "min-h-screen bg-gradient-to-br from-orange-200 via-yellow-100 to-pink-200",
   container: "max-w-7xl mx-auto p-4 sm:p-6",
   
   // Header
@@ -94,13 +94,13 @@ const styles = {
   coldestCutText: "font-body text-sm sm:text-base",
   
   // Shop
-  shopCard: "bg-linoleum p-4 rounded-cafeteria shadow-card border-3 border-chalkboard hover:border-pickle-green transition-colors cursor-pointer flex flex-col relative",
-  shopCardDisabled: "bg-metal-gray/20 p-4 rounded-cafeteria shadow-card border-3 border-metal-gray opacity-60 cursor-not-allowed flex flex-col relative",
-  shopCardTitle: "font-display text-base sm:text-lg text-chalkboard mb-2",
-  shopCardStats: "font-body text-xs sm:text-sm text-chalkboard mb-2 flex-1",
-  shopCardCategory: "text-bubblegum-pink font-bold text-xs mb-1",
-  shopCardAbility: "text-pickle-green italic text-xs mb-3 min-h-[2.5rem]",
-  shopBadge: "absolute -top-2 -right-2 bg-blue-500 text-milk-carton font-bold text-xs w-6 h-6 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card"
+  shopCard: "bg-gradient-to-br from-milk-carton to-white p-4 rounded-cafeteria shadow-tray border-4 border-chalkboard hover:border-pickle-green hover:shadow-xl transition-all cursor-pointer flex flex-col relative transform hover:scale-105",
+  shopCardDisabled: "bg-gradient-to-br from-metal-gray/30 to-metal-gray/10 p-4 rounded-cafeteria shadow-card border-4 border-metal-gray opacity-60 cursor-not-allowed flex flex-col relative",
+  shopCardTitle: "font-display text-lg sm:text-xl text-chalkboard mb-2 text-center",
+  shopCardStats: "font-body text-sm sm:text-base text-chalkboard mb-2 flex-1 space-y-1",
+  shopCardCategory: "text-bubblegum-pink font-bold text-xs mb-2 text-center bg-bubblegum-pink/20 rounded px-2 py-1",
+  shopCardAbility: "text-pickle-green italic text-xs mb-3 min-h-[2.5rem] text-center bg-pickle-green/10 rounded px-2 py-1",
+  shopBadge: "absolute -top-3 -right-3 bg-gradient-to-br from-blue-500 to-blue-600 text-milk-carton font-display text-sm w-8 h-8 rounded-full flex items-center justify-center border-3 border-chalkboard shadow-tray z-10"
 };
 
 export default styles;

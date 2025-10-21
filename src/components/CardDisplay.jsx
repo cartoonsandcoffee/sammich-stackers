@@ -236,29 +236,34 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
           {card.permanentFlavorBonus > 0 && <span className={styles.cardStar}> ★</span>}
         </div>
         
-        {/* Show calculated flavor badge when value differs from base */}
-        {sandwich && position !== undefined && calculatedFlavor !== null && calculatedFlavor !== (cardData.flavor + (card.permanentFlavorBonus || 0)) && (
-          <div className="absolute -top-2 -right-2 bg-gradient-to-br from-purple-400 to-pink-500 text-milk-carton font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
-            🍽️{calculatedFlavor}
-          </div>
+        {/* Show badges during gameplay (when in sandwich, not on victory screen) */}
+        {sandwich && position !== undefined && !showCalculatedFlavor && (
+          <>
+            {/* Flavor badge - only if different from base */}
+            {calculatedFlavor !== null && calculatedFlavor !== (cardData.flavor + (card.permanentFlavorBonus || 0)) && (
+              <div className="absolute -top-2 -right-2 bg-gradient-to-br from-purple-400 to-pink-500 text-milk-carton font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
+                🍽️{calculatedFlavor}
+              </div>
+            )}
+            
+            {/* Yuck badge - only if card has yuck */}
+            {cardData.yuck > 0 && (
+              <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-yellow-400 via-green-400 to-yellow-600 text-chalkboard font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
+                🤢{cardData.yuck}
+              </div>
+            )}
+            
+            {/* Cash badge - only if card has cash */}
+            {cardData.cash > 0 && (
+              <div className="absolute -bottom-2 -left-2 bg-gradient-to-br from-green-400 to-emerald-500 text-chalkboard font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
+                💵{cardData.cash}
+              </div>
+            )}
+          </>
         )}
         
-        {/* Show yuck badge if card has yuck */}
-        {sandwich && position !== undefined && cardData.yuck > 0 && (
-          <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-yellow-400 via-green-400 to-yellow-600 text-chalkboard font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
-            🤢{cardData.yuck}
-          </div>
-        )}
-        
-        {/* Show cash badge if card has cash */}
-        {sandwich && position !== undefined && cardData.cash > 0 && (
-          <div className="absolute -bottom-2 -left-2 bg-gradient-to-br from-green-400 to-emerald-500 text-chalkboard font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
-            💵{cardData.cash}
-          </div>
-        )}
-        
-        {/* Victory screen badge - only on victory screen */}
-        {showCalculatedFlavor && (
+        {/* Victory screen badge - only shows total flavor number */}
+        {showCalculatedFlavor && calculatedFlavor !== null && (
           <div className="absolute -top-2 -right-2 bg-gradient-to-br from-purple-400 to-pink-500 text-milk-carton font-display text-sm w-8 h-8 rounded-full flex items-center justify-center border-3 border-chalkboard shadow-card z-10">
             {calculatedFlavor}
           </div>

@@ -443,31 +443,55 @@ export default function SammichStackers() {
                 </button>
               </div>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {shopCards.map(card => {
-                const ownedCount = state.playerCollection.filter(c => c.name === card.name).length;
-                const canAfford = state.cash >= card.cost;
-                return (
-                  <div key={card.name} className={canAfford ? styles.shopCard : styles.shopCardDisabled}>
-                    {ownedCount > 0 && <div className={styles.shopBadge}>{ownedCount}</div>}
-                    <div className={styles.shopCardTitle}>{card.name}</div>
-                    <div className={styles.shopCardStats}>
-                      {card.category && <div className={styles.shopCardCategory}>{card.category}</div>}
-                      <div>🍽️ {card.flavor} | 🤢 {card.yuck}</div>
-                      <div>💵 {card.cash}</div>
-                      {card.ability && <div className={styles.shopCardAbility}>{card.ability}</div>}
-                    </div>
-                    <button
-                      onClick={() => dispatch({ type: 'BUY_CARD', cardName: card.name, cardData: card })}
-                      disabled={!canAfford}
-                      className={`${canAfford ? styles.buttonPrimary : styles.buttonSmall} w-full text-sm py-2 mt-auto`}
-                    >
-                      {canAfford ? `$${card.cost}` : `Need $${card.cost - state.cash}`}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
+			
+			<div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+			  {shopCards.map(card => {
+				const ownedCount = state.playerCollection.filter(c => c.name === card.name).length;
+				const canAfford = state.cash >= card.cost;
+				return (
+				  <div key={card.name} className={canAfford ? styles.shopCard : styles.shopCardDisabled}>
+					{ownedCount > 0 && <div className={styles.shopBadge}>{ownedCount}</div>}
+					
+					{/* Card image if available */}
+					{card.imageFile && (
+					  <img 
+						src={`/images/${card.imageFile}`} 
+						alt={card.name}
+						className="w-20 h-20 mx-auto mb-2 object-contain"
+						onError={(e) => { e.target.style.display = 'none'; }}
+					  />
+					)}
+					
+					<div className={styles.shopCardTitle}>{card.name}</div>
+					
+					{card.category && (
+					  <div className={styles.shopCardCategory}>{card.category}</div>
+					)}
+					
+					<div className={styles.shopCardStats}>
+					  <div className="flex justify-around items-center text-base font-bold">
+						<span title="Flavor">🍽️ {card.flavor}</span>
+						<span title="Yuck" className={card.yuck > 0 ? 'text-red-600' : ''}>🤢 {card.yuck}</span>
+						<span title="Cash">💵 {card.cash}</span>
+					  </div>
+					</div>
+					
+					{card.ability && (
+					  <div className={styles.shopCardAbility}>{card.ability}</div>
+					)}
+					
+					<button
+					  onClick={() => dispatch({ type: 'BUY_CARD', cardName: card.name, cardData: card })}
+					  disabled={!canAfford}
+					  className={`${canAfford ? styles.buttonPrimary : styles.buttonSmall} w-full text-sm py-2 mt-auto`}
+					>
+					  {canAfford ? `💰 $${card.cost}` : `Need $${card.cost - state.cash} more`}
+					</button>
+				  </div>
+				);
+			  })}
+			</div>
+			
             <button onClick={() => dispatch({ type: 'NEXT_MATCH' })} className={`${styles.buttonPrimary} w-full`}>
               Next Match
             </button>

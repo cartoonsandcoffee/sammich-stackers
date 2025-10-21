@@ -22,10 +22,10 @@ const styles = {
   matchmakingText: "font-display text-3xl text-chalkboard animate-pulse",
   
   // Game Areas
-  opponentAreaActive: "bg-gradient-to-br from-ketchup-red/20 to-ketchup-red/10 p-4 rounded-cafeteria shadow-tray border-4 border-ketchup-red/50",
-  opponentAreaInactive: "bg-gradient-to-br from-metal-gray/20 to-metal-gray/10 p-4 rounded-cafeteria shadow-tray border-4 border-metal-gray/50",
-  playerAreaActive: "bg-gradient-to-br from-pickle-green/20 to-pickle-green/10 p-4 rounded-cafeteria shadow-tray border-4 border-pickle-green/50",
-  playerAreaInactive: "bg-gradient-to-br from-metal-gray/20 to-metal-gray/10 p-4 rounded-cafeteria shadow-tray border-4 border-metal-gray/50",
+  opponentAreaActive: "bg-gradient-to-br from-red-300 via-pink-200 to-red-200 p-4 rounded-cafeteria shadow-tray border-4 border-red-400",
+  opponentAreaInactive: "bg-gradient-to-br from-gray-300 to-gray-200 p-4 rounded-cafeteria shadow-tray border-4 border-gray-400",
+  playerAreaActive: "bg-gradient-to-br from-teal-300 via-cyan-200 to-emerald-200 p-4 rounded-cafeteria shadow-tray border-4 border-teal-400",
+  playerAreaInactive: "bg-gradient-to-br from-gray-300 to-gray-200 p-4 rounded-cafeteria shadow-tray border-4 border-gray-400",
   
   playerHeader: "flex flex-col sm:flex-row justify-between items-start sm:items-center mb-3 gap-2",
   playerName: "font-display text-xl sm:text-2xl text-chalkboard",

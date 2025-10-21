@@ -227,6 +227,17 @@ export const gameReducer = (state, action) => {
             result = 'tie';
           }
           
+          // Update wins/losses in localStorage
+          if (result === 'win') {
+            const newWins = state.wins + 1;
+            localStorage.setItem('sammich_wins', newWins.toString());
+          } else if (result === 'loss') {
+            // Loss resets everything - handled in END_ROUND
+          } else if (result === 'tie') {
+            const newLosses = state.losses + 1;
+            localStorage.setItem('sammich_losses', newLosses.toString());
+          }
+          
           return {
             ...state,
             opponentSandwich: finalSandwich,
@@ -235,6 +246,8 @@ export const gameReducer = (state, action) => {
             phase: 'round_end',
             roundResult: result,
             currentTurn: 'done',
+            wins: result === 'win' ? state.wins + 1 : state.wins,
+            losses: result === 'tie' ? state.losses + 1 : state.losses,
             message: result === 'win' ? 'You win!' : result === 'loss' ? 'You lose!' : 'Tie game!'
           };
         }

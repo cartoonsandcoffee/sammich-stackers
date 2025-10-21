@@ -485,6 +485,9 @@ export default function SammichStackers() {
           </div>
         )}
       </div>
+      
+      {/* Version Badge */}
+      <div className={styles.versionBadge}>v1.0.0</div>
     </div>
   );
 }

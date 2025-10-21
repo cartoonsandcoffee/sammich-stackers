@@ -316,8 +316,8 @@ export default function SammichStackers() {
                 </div>
               )}
               
-              <div className="flex justify-between items-center mt-4">
-                <div className="flex gap-2">
+			  <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 mt-4">
+				<div className="flex flex-col sm:flex-row gap-2">				
                   <button
                     onClick={() => dispatch({ type: 'FLIP_CARD' })}
                     disabled={state.playerFinished || state.currentTurn !== 'player' || state.playerDeck.length === 0}
@@ -537,7 +537,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.2</div>
+      <div className={styles.versionBadge}>v1.0.13</div>
     </div>
   );
 }

@@ -12,10 +12,9 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
     
     let calculatedFlavor = cardData.flavor + (card.permanentFlavorBonus || 0);
     
-    // Bread bonus
+    // Bread bonus - should just add permanentBreadBonus (already includes sardines from past rounds)
     if (card.name === 'Bread') {
-      const sardineCount = sandwich.filter(c => c.name === 'Salty Sardines').length;
-      calculatedFlavor += permanentBreadBonus + sardineCount;
+      calculatedFlavor += permanentBreadBonus;
     }
     
     // Tar tar sauce
@@ -52,11 +51,11 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
       calculatedFlavor = calculatedFlavor * multiplier;
     }
     
-    // Pickles
+    // Pickles - CORRECT: base 2 + (yuck² × 2)
     if (card.name === 'Pickles') {
       const scores = calculateScores(sandwich, permanentBreadBonus);
       const picklesBonus = scores.yuck * scores.yuck * 2;
-      calculatedFlavor += picklesBonus;
+      calculatedFlavor = 2 + picklesBonus;  // Base 2 + quadratic bonus
     }
     
     // Jelly
@@ -72,6 +71,75 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
   };
   
   const calculatedFlavor = showCalculatedFlavor ? getCalculatedFlavor() : null;
+  
+  // Get list of cards providing bonuses to this card
+  const getBonusSources = () => {
+    if (!sandwich || position === undefined) return [];
+    
+    const sources = [];
+    
+    // Check for Spiced Ham before this card
+    if (position > 0 && sandwich[position - 1].name === 'Spiced Ham') {
+      sources.push('Spiced Ham');
+    }
+    
+    // Bread gets bonus from Sardines
+    if (card.name === 'Bread' && permanentBreadBonus > 0) {
+      sources.push('Salty Sardines');
+    }
+    
+    // Tar tar sauce gets bonus from Fish
+    if (card.name === 'Tar tar sauce') {
+      const fishCount = sandwich.filter(c => CARD_DATABASE[c.name].category === 'Fish').length;
+      if (fishCount > 0) sources.push(`${fishCount} Fish`);
+    }
+    
+    // Beefy Balogna from other baloneys
+    if (card.name === 'Beefy Balogna') {
+      const otherBaloneys = sandwich.filter((c, i) => c.name === 'Beefy Balogna' && i !== position).length;
+      if (otherBaloneys > 0) sources.push(`${otherBaloneys} Other Balogna`);
+    }
+    
+    // Ham from Cheese
+    if (card.name === 'Ham') {
+      const cheeseCount = sandwich.filter(c => CARD_DATABASE[c.name].category === 'Cheese').length;
+      if (cheeseCount > 0) sources.push(`${cheeseCount} Cheese`);
+    }
+    
+    // Mayonaise from adjacent Bread
+    if (card.name === 'Mayonaise') {
+      const prevCard = position > 0 ? sandwich[position - 1] : null;
+      const nextCard = position < sandwich.length - 1 ? sandwich[position + 1] : null;
+      if ((prevCard && prevCard.name === 'Bread') || (nextCard && nextCard.name === 'Bread')) {
+        sources.push('Adjacent Bread');
+      }
+    }
+    
+    // Lean Beef from other Lean Beef
+    if (card.name === 'Lean Beef') {
+      const leanBeefCount = sandwich.filter((c, i) => c.name === 'Lean Beef' && i <= position).length;
+      if (leanBeefCount > 1) sources.push(`${leanBeefCount} Lean Beef Stack`);
+    }
+    
+    // Pickles from Yuck
+    if (card.name === 'Pickles') {
+      const scores = calculateScores(sandwich, permanentBreadBonus);
+      if (scores.yuck > 0) sources.push(`${scores.yuck} Yuck`);
+    }
+    
+    // Jelly from Peanut Butter
+    if (card.name === 'Jelly') {
+      const prevCard = position > 0 ? sandwich[position - 1] : null;
+      const nextCard = position < sandwich.length - 1 ? sandwich[position + 1] : null;
+      if ((prevCard && prevCard.name === 'Peanut Butter') || (nextCard && nextCard.name === 'Peanut Butter')) {
+        sources.push('Peanut Butter');
+      }
+    }
+    
+    return sources;
+  };
+  
+  const bonusSources = getBonusSources();
   
   // Calculate what this card's flavor would be in current context (for tooltip)
   const getCardFlavorExplanation = () => {
@@ -168,10 +236,10 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
           {card.permanentFlavorBonus > 0 && <span className={styles.cardStar}> ★</span>}
         </div>
         
-        {/* Show calculated flavor value on victory screen */}
+        {/* Show calculated flavor value on victory screen as badge */}
         {showCalculatedFlavor && calculatedFlavor !== null && (
-          <div className="text-pickle-green font-display text-lg mt-1">
-            🍽️ {calculatedFlavor}
+          <div className="absolute -top-2 -right-2 bg-pickle-green text-milk-carton font-display text-sm w-8 h-8 rounded-full flex items-center justify-center border-3 border-chalkboard shadow-card z-10">
+            {calculatedFlavor}
           </div>
         )}
       </div>
@@ -186,9 +254,6 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
           🍽️ Flavor: {cardData.flavor}
           {card.permanentFlavorBonus > 0 && ` + ${card.permanentFlavorBonus} ★`}
           {card.name === 'Bread' && permanentBreadBonus > 0 && ` + ${permanentBreadBonus} (Sardines)`}
-		  {showCalculatedFlavor && calculatedFlavor !== null && calculatedFlavor !== (cardData.flavor + (card.permanentFlavorBonus || 0)) && (
-			<span className="text-pickle-green font-bold"> = {calculatedFlavor} total</span>
-		  )}		  
         </div>
         <div>🤢 Yuck: {cardData.yuck}</div>
         <div>💵 Cash: {cardData.cash}</div>

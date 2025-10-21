@@ -264,7 +264,7 @@ export default function SammichStackers() {
                   ) : (
                     <>
                       <span title="Flavor" className="text-xl">🍽️ {opponentScores.flavor}</span>
-                      <span title="Yuck" className={`text-xl ${opponentScores.yuck >= 3 ? 'text-red-600' : ''}`}>🤢 {opponentScores.yuck}</span>
+                      <span title="Yuck" className={`text-xl ${opponentScores.yuck >= 3 ? 'text-red-600' : ''}`}>🤢 {opponentScores.yuck}/3</span>
                       <span title="Cash" className="text-xl">💵 {opponentScores.cash}</span>
                       <button onClick={() => setShowOpponentDeck(true)} className={styles.buttonSmall}>
                         <Eye size={12} className="inline mr-1" /> Deck
@@ -292,7 +292,7 @@ export default function SammichStackers() {
                   ) : (
                     <>
                       <span title="Flavor" className="text-xl">🍽️ {playerScores.flavor}</span>
-                      <span title="Yuck" className={`text-xl ${playerScores.yuck >= 3 ? 'text-red-600' : ''}`}>🤢 {playerScores.yuck}</span>
+                      <span title="Yuck" className={`text-xl ${playerScores.yuck >= 3 ? 'text-red-600' : ''}`}>🤢 {playerScores.yuck}/3</span>
                       <span title="Cash" className="text-xl">💵 {playerScores.cash}</span>
                     </>
                   )}
@@ -561,7 +561,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.13</div>
+      <div className={styles.versionBadge}>v1.0.14</div>
     </div>
   );
 }

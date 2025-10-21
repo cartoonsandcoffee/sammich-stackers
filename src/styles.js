@@ -28,11 +28,12 @@ export const styles = {
   cardContainer: "flex flex-wrap gap-2 mb-3",
   card: "relative group transition-transform hover:scale-105 hover:-translate-y-1",
   cardInner: "bg-milk-carton border-4 border-chalkboard rounded-xl p-3 shadow-card cursor-default min-w-[80px] text-center",
+  cardImage: "w-24 h-24 mx-auto mb-2 object-contain",
   cardName: "font-display text-sm sm:text-base text-chalkboard",
   cardStar: "text-pickle-green text-xl",
   
   // Tooltip
-  tooltip: "absolute z-20 bg-chalkboard text-milk-carton text-xs rounded-xl p-3 -top-32 left-0 w-64 shadow-tray opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border-3 border-milk-carton",
+  tooltip: "absolute z-50 bg-chalkboard text-milk-carton text-xs rounded-xl p-3 -top-32 left-0 w-64 shadow-tray opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border-3 border-milk-carton",
   tooltipTitle: "font-display text-base mb-2 text-mustard-yellow",
   tooltipCategory: "text-bubblegum-pink text-xs mb-1",
   tooltipAbility: "text-mustard-yellow mt-2 italic",
@@ -101,6 +102,9 @@ export const styles = {
   previewBox: "mb-3 p-3 bg-mustard-yellow border-4 border-chalkboard rounded-xl text-sm font-bold text-chalkboard shadow-card",
   finishedBox: "bg-pickle-green/20 border-4 border-pickle-green rounded-xl p-4 text-center shadow-card",
   finishedText: "font-display text-chalkboard",
+  
+  // Version number
+  versionBadge: "fixed bottom-2 right-2 bg-chalkboard/70 text-milk-carton text-xs px-2 py-1 rounded border border-milk-carton/50 font-mono",
 };
 
 export default styles;

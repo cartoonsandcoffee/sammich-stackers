@@ -316,7 +316,11 @@ export default function SammichStackers() {
                     disabled={state.playerFinished || state.currentTurn !== 'player' || state.playerDeck.length === 0}
                     className={styles.buttonPrimary}
                   >
-                    🎲 Flip Card ({state.playerDeck.length})
+                    {state.currentTurn === 'player' ? (
+                      <>🥪 Flip Card ({state.playerDeck.length})</>
+                    ) : (
+                      <>⏳ Opponent's Turn</>
+                    )}
                   </button>
                   <button
                     onClick={() => dispatch({ type: 'PLAY_BREAD' })}

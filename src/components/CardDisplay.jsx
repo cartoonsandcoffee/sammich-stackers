@@ -236,39 +236,58 @@ export const CardDisplay = ({ card, sandwich, position, permanentBreadBonus = 0,
           {card.permanentFlavorBonus > 0 && <span className={styles.cardStar}> ★</span>}
         </div>
         
-        {/* Show calculated flavor value on victory screen as badge */}
-        {showCalculatedFlavor && calculatedFlavor !== null && (
-          <div className="absolute -top-2 -right-2 bg-pickle-green text-milk-carton font-display text-sm w-8 h-8 rounded-full flex items-center justify-center border-3 border-chalkboard shadow-card z-10">
+        {/* Show calculated flavor badge when value differs from base */}
+        {sandwich && position !== undefined && calculatedFlavor !== null && calculatedFlavor !== (cardData.flavor + (card.permanentFlavorBonus || 0)) && (
+          <div className="absolute -top-2 -right-2 bg-gradient-to-br from-purple-400 to-pink-500 text-milk-carton font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
+            🍽️{calculatedFlavor}
+          </div>
+        )}
+        
+        {/* Show yuck badge if card has yuck */}
+        {sandwich && position !== undefined && cardData.yuck > 0 && (
+          <div className="absolute -bottom-2 -right-2 bg-gradient-to-br from-yellow-400 via-green-400 to-yellow-600 text-chalkboard font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
+            🤢{cardData.yuck}
+          </div>
+        )}
+        
+        {/* Show cash badge if card has cash */}
+        {sandwich && position !== undefined && cardData.cash > 0 && (
+          <div className="absolute -bottom-2 -left-2 bg-gradient-to-br from-green-400 to-emerald-500 text-chalkboard font-display text-xs px-2 py-1 rounded-full flex items-center justify-center border-2 border-chalkboard shadow-card z-10">
+            💵{cardData.cash}
+          </div>
+        )}
+        
+        {/* Victory screen badge - only on victory screen */}
+        {showCalculatedFlavor && (
+          <div className="absolute -top-2 -right-2 bg-gradient-to-br from-purple-400 to-pink-500 text-milk-carton font-display text-sm w-8 h-8 rounded-full flex items-center justify-center border-3 border-chalkboard shadow-card z-10">
             {calculatedFlavor}
           </div>
         )}
       </div>
- 
-	  {/* Tooltip */}
-	  <div className={styles.tooltip}>
-	    <div className={styles.tooltipTitle}>{card.name}</div>
-    	  {cardData.category && (
-			<div className={styles.tooltipCategory}>{cardData.category}</div>
-		)}
-		<div>
-			🍽️ Flavor: {calculatedFlavor !== null ? calculatedFlavor : (cardData.flavor + (card.permanentFlavorBonus || 0))}
-			{calculatedFlavor !== null && calculatedFlavor !== (cardData.flavor + (card.permanentFlavorBonus || 0)) && (
-				<span className="text-metal-gray"> (Base: {cardData.flavor + (card.permanentFlavorBonus || 0)})</span>
-			)}
-		</div>
-		<div>🤢 Yuck: {cardData.yuck}</div>
-		<div>💵 Cash: {cardData.cash}</div>
-		{cardData.cost && <div>💰 Cost: ${cardData.cost}</div>}
-		{cardData.ability && (
-			<div className={styles.tooltipAbility}>{cardData.ability}</div>
-		)}
-		{bonusSources.length > 0 && (
-			<div className="mt-2 text-xs border-t border-milk-carton/30 pt-2 text-mustard-yellow">
-			Bonuses: {bonusSources.join(', ')}
-			</div>
-		)}
-	  </div> 
-	  	  
+      
+      {/* Tooltip */}
+      <div className={styles.tooltip}>
+        <div className={styles.tooltipTitle}>{card.name}</div>
+        {cardData.category && (
+          <div className={styles.tooltipCategory}>{cardData.category}</div>
+        )}
+        <div>
+          🍽️ Flavor: {cardData.flavor}
+          {card.permanentFlavorBonus > 0 && ` + ${card.permanentFlavorBonus} ★`}
+          {card.name === 'Bread' && permanentBreadBonus > 0 && ` + ${permanentBreadBonus} (Sardines)`}
+        </div>
+        <div>🤢 Yuck: {cardData.yuck}</div>
+        <div>💵 Cash: {cardData.cash}</div>
+        {cardData.cost && <div>💰 Cost: ${cardData.cost}</div>}
+        {cardData.ability && (
+          <div className={styles.tooltipAbility}>{cardData.ability}</div>
+        )}
+        {flavorExplanation && (
+          <div className="mt-2 text-xs border-t border-milk-carton/30 pt-2">
+            In Sandwich: {flavorExplanation}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

@@ -57,7 +57,7 @@ export const fetchGameRecord = async () => {
 export const updateGameRecord = async (matchNumber, username, deckId) => {
   try {
     const result = await supabaseRequest('game_records', {
-      method: 'POST',
+      method: 'PATCH',
       body: JSON.stringify({
         highest_match: matchNumber,
         record_holder_username: username,
@@ -66,7 +66,7 @@ export const updateGameRecord = async (matchNumber, username, deckId) => {
     });
     
     console.log('New record set!', result);
-    return { success: true };
+    return { success: true, deckId: result[0]?.id };
   } catch (error) {
     console.error('Error updating game record:', error);
     return { success: false };

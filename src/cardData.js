@@ -17,7 +17,7 @@ export const CARD_DATABASE = {
   'Tar tar sauce': { name: 'Tar tar sauce', flavor: 0, yuck: 0, cash: 0, cost: 4, ability: 'Cancels 1 yuck, +1 per fish', imageFile: 'tar-tar-sauce.png' },
   'Tomato': { name: 'Tomato', flavor: 1, yuck: 0, cash: 2, cost: 6, ability: 'Shows next card', imageFile: 'tomato.png' },
   'Sticky Onions': { name: 'Sticky Onions', flavor: 3, yuck: 0, cash: 2, cost: 7, ability: 'Never last (auto-draw)', imageFile: 'sticky-onions.png' },
-  'Pickles': { name: 'Pickles', flavor: 2, yuck: 0, cash: 0, cost: 16, ability: 'Flavor increases quadratically for each yuck', imageFile: 'pickles.png' },
+  'Pickles': { name: 'Pickles', flavor: 2, yuck: 0, cash: 0, cost: 20, ability: 'Flavor increases quadratically for each yuck', imageFile: 'pickles.png' },
   'Cheddar Slices': { name: 'Cheddar Slices', flavor: 1, yuck: 0, cash: 1, cost: 4, category: 'Cheese', imageFile: 'cheddar-slices.png' },
   'Salty Sardines': { name: 'Salty Sardines', flavor: 0, yuck: 1, cash: 0, cost: 8, category: 'Fish', ability: 'Bread +1 flavor permanently', imageFile: 'salty-sardines.png' }
 };

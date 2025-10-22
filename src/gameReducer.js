@@ -440,21 +440,13 @@ export const gameReducer = (state, action) => {
 		return getInitialState();		
       }
 
-	  if (state.matchNumber >= 1) {  // Change from whatever the real final match number is
+	  // Check if player beat the final boss
+	  if (state.isFinalMatch && state.roundResult === 'win') {
 		return {
 		  ...state,
-		  phase: 'final_victory',
-		  // Keep sandwich data for sharing
+		  phase: 'final_victory'
 		};
 	  }
-  
-	  // Check if player beat the final boss
-	  //if (state.isFinalMatch && state.roundResult === 'win') {
-		//return {
-		//  ...state,
-		//  phase: 'final_victory'
-		//};
-	  //}
       
       // WIN or TIE: Calculate cash and go to shop
       const playerScores = calculateScores(state.playerSandwich, state.permanentBreadBonus);

@@ -2,7 +2,7 @@ import React, { useState, useReducer, useEffect } from 'react';
 import { Eye, Clock, CheckCircle, Edit2, Share2 } from 'lucide-react';
 import { CARD_DATABASE, createCard, createStarterDeck, getOpponentName } from './cardData';
 import { calculateScores, generateBotDeck } from './gameLogic';
-import { fetchOpponentDeck, saveWinningDeck } from './supabase';
+import { fetchOpponentDeck, saveWinningDeck, fetchGameRecord } from './supabase';
 import { gameReducer } from './gameReducer';
 import { CardDisplay } from './components/CardDisplay';
 import { DeckModal } from './components/modals/DeckModal';
@@ -840,7 +840,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.16</div>
+      <div className={styles.versionBadge}>v1.0.17</div>
     </div>
   );
 }

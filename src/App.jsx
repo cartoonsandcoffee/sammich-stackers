@@ -16,7 +16,7 @@ import styles from './styles';
 const getInitialState = () => {
   if (typeof window === 'undefined') {
     return {
-      phase: 'username_entry',
+      phase: 'intro',
       username: '',
       playerCollection: createStarterDeck(),
       playerName: "You",
@@ -56,7 +56,7 @@ const getInitialState = () => {
   const savedBreadBonus = localStorage.getItem('sammich_bread_bonus');
   
   return {
-    phase: savedUsername ? 'matchmaking' : 'username_entry',
+    phase: savedUsername ? 'matchmaking' : 'intro',
     username: savedUsername || '',
     playerCollection: createStarterDeck(),
     playerName: savedUsername ? `You (${savedUsername})` : "You",
@@ -360,6 +360,55 @@ export default function SammichStackers() {
             <div className={styles.messageBox}>{state.message}</div>
           </div>
         </div>
+
+		{state.phase === 'intro' && (
+		  <div className={styles.victoryContainer}>
+			<div style={{ 
+			  textAlign: 'center',
+			  maxWidth: '600px',
+			  margin: '0 auto'
+			}}>
+			  <h1 className={`${styles.victoryTitle} ${styles.victoryWin}`} style={{ marginBottom: '32px' }}>
+				🥪 SAMMICH STACKERS 🥪
+			  </h1>
+			  
+			  <div style={{
+				backgroundColor: '#FFF',
+				border: '4px solid #1A1A1A',
+				borderRadius: '16px',
+				padding: '24px',
+				marginBottom: '32px',
+				fontFamily: "'Baloo 2', cursive",
+				fontSize: '18px',
+				lineHeight: '1.6',
+				textAlign: 'left'
+			  }}>
+				<p style={{ marginBottom: '16px' }}>
+				  <strong>Hey, cool kid!</strong> This lunch room ain't for wussies! 
+				  If you can't stack a scrumptious sammich, your reputation will be dirt!
+				</p>
+				<p style={{ marginBottom: '16px' }}>
+				  Just make sure your sammich maximizes <span style={{ color: '#2A9D8F', fontWeight: 'bold' }}>FLAVOR</span> before 
+				  you get 3 <span style={{ color: '#E63946', fontWeight: 'bold' }}>YUCKS</span>! 
+				</p>
+				<p style={{ marginBottom: '0' }}>
+				  If you get 3 yucks, all the kids at the table will blow chunks all over your tray and it's over!
+				</p>
+				<p style={{ marginTop: '16px', fontSize: '24px', textAlign: 'center' }}>
+				  <strong>Good luck! 🍀</strong>
+				</p>
+			  </div>
+			  
+			  <button 
+				onClick={() => dispatch({ type: 'START_GAME' })}
+				className={styles.buttonPrimary}
+				style={{ fontSize: '24px', padding: '16px 48px' }}
+			  >
+				LET'S GO!
+			  </button>
+			</div>
+		  </div>
+		)}
         
         {state.phase === 'username_entry' && (
           <div className={styles.usernameContainer}>
@@ -712,7 +761,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.15</div>
+      <div className={styles.versionBadge}>v1.0.16</div>
     </div>
   );
 }

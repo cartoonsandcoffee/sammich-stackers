@@ -15,6 +15,14 @@ export const gameReducer = (state, action) => {
       };
     }
     
+	case 'START_GAME': {
+	  return {
+		...state,
+		phase: 'username_entry',
+		message: 'Enter your name!'
+	  };
+	}
+
     case 'CHANGE_USERNAME': {
       localStorage.setItem('sammich_username', action.username);
       return {

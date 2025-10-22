@@ -238,6 +238,8 @@ export default function SammichStackers() {
 
 	const renderShareCard = () => {
 	  if (state.phase !== 'round_end') return null;
+
+	  const playerScores = calculateScores(state.playerSandwich, state.permanentBreadBonus);
 	  
 	  return (
 		<div 

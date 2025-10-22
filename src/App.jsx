@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { Eye, Clock, CheckCircle, Edit2 } from 'lucide-react';
+import { Eye, Clock, CheckCircle, Edit2, Share2 } from 'lucide-react';
 import { CARD_DATABASE, createCard, createStarterDeck, getOpponentName } from './cardData';
 import { calculateScores, generateBotDeck } from './gameLogic';
 import { fetchOpponentDeck, saveWinningDeck } from './supabase';
@@ -9,6 +9,8 @@ import { DeckModal } from './components/modals/DeckModal';
 import { OpponentDeckModal } from './components/modals/OpponentDeckModal';
 import { RemoveCardModal } from './components/modals/RemoveCardModal';
 import { ManualSaveModal } from './components/modals/ManualSaveModal';
+
+import html2canvas from 'html2canvas';
 import styles from './styles';
 
 const getInitialState = () => {
@@ -94,6 +96,51 @@ export default function SammichStackers() {
   const [showChangeUsername, setShowChangeUsername] = useState(false);
   const [usernameInput, setUsernameInput] = useState('');
   const [newUsernameInput, setNewUsernameInput] = useState('');
+
+  const handleShare = async () => {
+    const shareContainer = document.getElementById('victory-share-container');
+    if (!shareContainer) return;
+    
+    try {
+      const canvas = await html2canvas(shareContainer, {
+        backgroundColor: '#E8DCC4',
+        scale: 2,
+        logging: false,
+        useCORS: true
+      });
+      
+      canvas.toBlob(async (blob) => {
+        const file = new File([blob], 'sammich-stackers-victory.png', { type: 'image/png' });
+        
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              title: `${state.username} won at Sammich Stackers!`,
+              text: `I scored ${state.playerFinalScore} points in Match ${state.matchNumber}! 🥪`,
+              files: [file]
+            });
+          } catch (err) {
+            if (err.name !== 'AbortError') {
+              console.error('Share failed:', err);
+              downloadImage(canvas);
+            }
+          }
+        } else {
+          downloadImage(canvas);
+        }
+      });
+    } catch (error) {
+      console.error('Error capturing screenshot:', error);
+      alert('Failed to capture screenshot. Try again!');
+    }
+  };
+
+  const downloadImage = (canvas) => {
+    const link = document.createElement('a');
+    link.download = `sammich-stackers-victory-${state.matchNumber}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
   
   useEffect(() => {
     const savedDeck = localStorage.getItem('sammich_deck');
@@ -348,8 +395,9 @@ export default function SammichStackers() {
           </div>
         )}
         
+
 		{state.phase === 'round_end' && (
-		  <div className={styles.victoryContainer}>
+		  <div id="victory-share-container" className={styles.victoryContainer}>
 			<h2 className={`${styles.victoryTitle} ${state.roundResult === 'win' ? styles.victoryWin : state.roundResult === 'loss' ? styles.victoryLoss : styles.victoryTie}`}>
 			  {state.roundResult === 'win' ? '🎉 Victory!' : state.roundResult === 'loss' ? '💔 Defeat' : '🤝 Tie Game!'}
 			</h2>
@@ -377,61 +425,49 @@ export default function SammichStackers() {
 			  </>
 			)}
 			
-			{/* SANDWICH DISPLAY WITH CALCULATED FLAVOR VALUES */}
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 			  <div className={`${styles.playerAreaActive} text-center`}>
-				<h3 className={styles.playerName}>{state.playerName}</h3>
+				<h3 className={styles.playerName}>{state.username}</h3>
 				<div className="my-3">
 				  <span className="text-4xl font-display">{state.playerFinalScore}</span>
 				</div>
 				<div className="flex flex-wrap gap-2 justify-center">
 				  {state.playerSandwich.map((card, i) => (
-					<CardDisplay 
-					  key={card.id} 
-					  card={card} 
-					  sandwich={state.playerSandwich} 
-					  position={i} 
-					  permanentBreadBonus={state.permanentBreadBonus}
-					  showCalculatedFlavor={true}
-					/>
+					<CardDisplay key={card.id} card={card} sandwich={state.playerSandwich} position={i} permanentBreadBonus={state.permanentBreadBonus} />
 				  ))}
 				</div>
 			  </div>
 			  
 			  <div className={`${styles.opponentAreaActive} text-center`}>
-				<h3 className={styles.playerName}>{state.opponentName}</h3>
+				<h3 className={styles.playerName}>{opponentName}</h3>
 				<div className="my-3">
 				  <span className="text-4xl font-display">{state.opponentFinalScore}</span>
 				</div>
 				<div className="flex flex-wrap gap-2 justify-center">
 				  {state.opponentSandwich.map((card, i) => (
-					<CardDisplay 
-					  key={card.id} 
-					  card={card} 
-					  sandwich={state.opponentSandwich} 
-					  position={i} 
-					  permanentBreadBonus={0}
-					  showCalculatedFlavor={true}
-					/>
+					<CardDisplay key={card.id} card={card} sandwich={state.opponentSandwich} position={i} permanentBreadBonus={0} />
 				  ))}
 				</div>
 			  </div>
 			</div>
 			
-			<div className="flex gap-3 justify-center">
-			  <button
-				onClick={() => dispatch({ type: 'CLAIM_REWARD' })}
-				className={styles.buttonPrimary}
-			  >
+			{/* Added watermark for shared images */}
+			<div className="text-center text-xs text-gray-600 mt-2">
+			  sammich-stackers.vercel.app
+			</div>
+			
+			<div className="flex flex-col sm:flex-row gap-3 justify-center">
+			  <button onClick={() => dispatch({ type: 'CLAIM_REWARD' })} className={styles.buttonPrimary}>
 				{state.roundResult === 'loss' ? 'Start Over' : 'Shop'}
 			  </button>
-			  <button onClick={() => alert('Share coming soon!')} className={styles.buttonSecondary}>
-				📤 Share
+			  <button onClick={handleShare} className={styles.buttonSecondary}>
+				<Share2 size={16} className="inline mr-2" />
+				Share Victory
 			  </button>
 			</div>
 		  </div>
 		)}
-        
+ 
         {state.phase === 'shop' && (
           <div className={styles.victoryContainer}>
             <div className="flex justify-between items-center mb-6">

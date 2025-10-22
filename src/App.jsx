@@ -597,7 +597,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.14</div>
+      <div className={styles.versionBadge}>v1.0.15</div>
     </div>
   );
 }

@@ -285,8 +285,11 @@ export default function SammichStackers() {
 		  <div style={{ marginBottom: '24px' }}>
 			<div style={{ fontSize: '24px', marginBottom: '12px', color: '#1A1A1A', textAlign: 'center' }}>Your Sammich</div>
 			<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-			  {state.playerSandwich.map((card) => {
+			  {state.playerSandwich.map((card, index) => {
 				const cardData = CARD_DATABASE[card.name];
+				// Get the calculated flavor for this specific card from the breakdown
+				const calculatedFlavor = playerScores.cardBreakdown[index]?.flavor || 0;
+				
 				return (
 				  <div 
 					key={card.id}
@@ -304,7 +307,7 @@ export default function SammichStackers() {
 					  {card.permanentFlavorBonus > 0 && <span style={{ color: '#2A9D8F' }}>★</span>}
 					</div>
 					<div style={{ color: '#666' }}>
-					  🍽️ {cardData.flavor + (card.permanentFlavorBonus || 0)}
+					  🍽️ {calculatedFlavor}
 					  {' '}🤢 {cardData.yuck}
 					  {' '}💵 {cardData.cash}
 					</div>

@@ -206,7 +206,7 @@ export default function SammichStackers() {
         if (!result.success && result.deckData) {
           dispatch({ type: 'SHOW_MANUAL_SAVE', deckData: result.deckData, jsonString: result.jsonString });
         }
-		if (result.success) {
+		if (result.success  && state.isFinalMatch) {
 		  await updateGameRecord(state.matchNumber, state.username, result.deckId);
 		}		
       };

@@ -97,43 +97,70 @@ export default function SammichStackers() {
   const [usernameInput, setUsernameInput] = useState('');
   const [newUsernameInput, setNewUsernameInput] = useState('');
 
-  const handleShare = async () => {
-    const shareContainer = document.getElementById('victory-share-container');
-    if (!shareContainer) return;
-    
-    try {
-      const canvas = await html2canvas(shareContainer, {
-        backgroundColor: '#E8DCC4',
-        scale: 2,
-        logging: false,
-        useCORS: true
-      });
-      
-      canvas.toBlob(async (blob) => {
-        const file = new File([blob], 'sammich-stackers-victory.png', { type: 'image/png' });
-        
-        if (navigator.share && navigator.canShare({ files: [file] })) {
-          try {
-            await navigator.share({
-              title: `${state.username} won at Sammich Stackers!`,
-              text: `I scored ${state.playerFinalScore} points in Match ${state.matchNumber}! 🥪`,
-              files: [file]
-            });
-          } catch (err) {
-            if (err.name !== 'AbortError') {
-              console.error('Share failed:', err);
-              downloadImage(canvas);
-            }
-          }
-        } else {
-          downloadImage(canvas);
-        }
-      });
-    } catch (error) {
-      console.error('Error capturing screenshot:', error);
-      alert('Failed to capture screenshot. Try again!');
-    }
-  };
+	const handleShare = async () => {
+	  const shareContainer = document.getElementById('victory-share-container');
+	  if (!shareContainer) return;
+	  
+	  try {
+		// Store original scroll position
+		const originalScrollY = window.scrollY;
+		
+		// Temporarily modify container for full capture
+		const originalMaxHeight = shareContainer.style.maxHeight;
+		const originalOverflow = shareContainer.style.overflow;
+		shareContainer.style.maxHeight = 'none';
+		shareContainer.style.overflow = 'visible';
+		
+		// Scroll to top of container
+		shareContainer.scrollIntoView({ behavior: 'instant', block: 'start' });
+		
+		// Wait a moment for layout to settle
+		await new Promise(resolve => setTimeout(resolve, 100));
+		
+		const canvas = await html2canvas(shareContainer, {
+		  backgroundColor: '#E8DCC4',
+		  scale: 2,
+		  logging: false,
+		  useCORS: true,
+		  windowWidth: shareContainer.scrollWidth,
+		  windowHeight: shareContainer.scrollHeight,
+		  width: shareContainer.scrollWidth,
+		  height: shareContainer.scrollHeight,
+		  scrollY: -window.scrollY,
+		  scrollX: -window.scrollX
+		});
+		
+		// Restore original styles and scroll
+		shareContainer.style.maxHeight = originalMaxHeight;
+		shareContainer.style.overflow = originalOverflow;
+		window.scrollTo(0, originalScrollY);
+		
+		canvas.toBlob(async (blob) => {
+		  const file = new File([blob], 'sammich-stackers-victory.png', { type: 'image/png' });
+		  
+		  if (navigator.share && navigator.canShare({ files: [file] })) {
+			try {
+			  await navigator.share({
+				title: `${state.username} won at Sammich Stackers!`,
+				text: `I scored ${state.playerFinalScore} points in Match ${state.matchNumber}! 🥪`,
+				files: [file]
+			  });
+			} catch (err) {
+			  if (err.name !== 'AbortError') {
+				console.error('Share failed:', err);
+				downloadImage(canvas);
+			  }
+			}
+		  } else {
+			downloadImage(canvas);
+		  }
+		});
+	  } catch (error) {
+		console.error('Error capturing screenshot:', error);
+		alert('Failed to capture screenshot. Try again!');
+	  }
+	};
+
 
   const downloadImage = (canvas) => {
     const link = document.createElement('a');

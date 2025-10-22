@@ -239,9 +239,6 @@ export default function SammichStackers() {
 	const renderShareCard = () => {
 	  if (state.phase !== 'round_end') return null;
 	  
-	  // Calculate final scores to get individual card bonuses
-	  const playerScores = calculateScores(state.playerSandwich, state.permanentBreadBonus);
-	  
 	  // Get opponent name
 	  const opponentName = state.opponentName || 'Opponent';
 	  
@@ -291,10 +288,10 @@ export default function SammichStackers() {
 		  <div style={{ marginBottom: '24px' }}>
 			<div style={{ fontSize: '24px', marginBottom: '12px', color: '#1A1A1A', textAlign: 'center' }}>Your Sammich</div>
 			<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
-			  {state.playerSandwich.map((card, index) => {
+			  {state.playerSandwich.map((card) => {
 				const cardData = CARD_DATABASE[card.name];
-				// Get the calculated flavor for this specific card from the breakdown
-				const calculatedFlavor = playerScores.cardBreakdown[index]?.flavor || 0;
+				// Use the card's final flavor value (includes all bonuses already calculated)
+				const finalFlavor = card.finalFlavor || (cardData.flavor + (card.permanentFlavorBonus || 0));
 				
 				return (
 				  <div 
@@ -313,7 +310,7 @@ export default function SammichStackers() {
 					  {card.permanentFlavorBonus > 0 && <span style={{ color: '#2A9D8F' }}>★</span>}
 					</div>
 					<div style={{ color: '#666' }}>
-					  🍽️ {calculatedFlavor}
+					  🍽️ {finalFlavor}
 					  {' '}🤢 {cardData.yuck}
 					  {' '}💵 {cardData.cash}
 					</div>

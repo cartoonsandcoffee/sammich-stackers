@@ -654,7 +654,7 @@ export default function SammichStackers() {
 		)}
  
 		{state.phase === 'final_victory' && (
-		  <div className={styles.victoryContainer}>
+		  <div id="victory-share-container" className={styles.victoryContainer}>
 			<h1 className={`${styles.victoryTitle} ${styles.victoryWin}`} style={{ fontSize: '48px', marginBottom: '24px' }}>
 			  👑 LEGENDARY! 👑
 			</h1>
@@ -693,6 +693,47 @@ export default function SammichStackers() {
 			  <span style={{ fontSize: '24px' }}>Match {state.matchNumber}</span>
 			</div>
 			
+			  {/* Your sandwich */}
+			  <div style={{ marginBottom: '24px' }}>
+				<div style={{ fontSize: '24px', marginBottom: '12px', color: '#1A1A1A', textAlign: 'center' }}>Your Sammich</div>
+				<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+				  {state.playerSandwich.map((card) => {
+					const cardData = CARD_DATABASE[card.name];
+					// Use the card's final flavor value (includes all bonuses already calculated)
+					const finalFlavor = card.finalFlavor || (cardData.flavor + (card.permanentFlavorBonus || 0));
+					
+					return (
+					  <div 
+						key={card.id}
+						style={{
+						  border: '4px solid #1A1A1A',
+						  borderRadius: '12px',
+						  padding: '12px',
+						  backgroundColor: '#FFF',
+						  width: '120px',
+						  fontSize: '12px'
+						}}
+					  >
+						<div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>
+						  {card.name}
+						  {card.permanentFlavorBonus > 0 && <span style={{ color: '#2A9D8F' }}>★</span>}
+						</div>
+						<div style={{ color: '#666' }}>
+						  🍽️ {finalFlavor}
+						  {' '}🤢 {cardData.yuck}
+						  {' '}💵 {cardData.cash}
+						</div>
+					  </div>
+					);
+				  })}
+				</div>
+			  </div>
+
+			{/* Watermark */}
+			<div className="text-center text-xs text-gray-600 mt-2">
+			  sammich-stackers.vercel.app
+			</div>
+				
 			<div className="flex flex-col sm:flex-row gap-3 justify-center">
 			  <button onClick={handleShare} className={styles.buttonPrimary}>
 				<Share2 size={20} className="inline mr-2" />
@@ -840,7 +881,7 @@ export default function SammichStackers() {
       </div>
       
       {/* Version Badge */}
-      <div className={styles.versionBadge}>v1.0.17</div>
+      <div className={styles.versionBadge}>v1.0.18</div>
     </div>
   );
 }

@@ -425,27 +425,42 @@ export default function SammichStackers() {
 			  </>
 			)}
 			
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+			{/* SANDWICH DISPLAY WITH CALCULATED FLAVOR VALUES */}
+			<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
 			  <div className={`${styles.playerAreaActive} text-center`}>
-				<h3 className={styles.playerName}>{state.username}</h3>
+				<h3 className={styles.playerName}>{state.playerName}</h3>
 				<div className="my-3">
 				  <span className="text-4xl font-display">{state.playerFinalScore}</span>
 				</div>
 				<div className="flex flex-wrap gap-2 justify-center">
 				  {state.playerSandwich.map((card, i) => (
-					<CardDisplay key={card.id} card={card} sandwich={state.playerSandwich} position={i} permanentBreadBonus={state.permanentBreadBonus} />
+					<CardDisplay 
+					  key={card.id} 
+					  card={card} 
+					  sandwich={state.playerSandwich} 
+					  position={i} 
+					  permanentBreadBonus={state.permanentBreadBonus}
+					  showCalculatedFlavor={true}
+					/>
 				  ))}
 				</div>
 			  </div>
 			  
 			  <div className={`${styles.opponentAreaActive} text-center`}>
-				<h3 className={styles.playerName}>{opponentName}</h3>
+				<h3 className={styles.playerName}>{state.opponentName}</h3>
 				<div className="my-3">
 				  <span className="text-4xl font-display">{state.opponentFinalScore}</span>
 				</div>
 				<div className="flex flex-wrap gap-2 justify-center">
 				  {state.opponentSandwich.map((card, i) => (
-					<CardDisplay key={card.id} card={card} sandwich={state.opponentSandwich} position={i} permanentBreadBonus={0} />
+					<CardDisplay 
+					  key={card.id} 
+					  card={card} 
+					  sandwich={state.opponentSandwich} 
+					  position={i} 
+					  permanentBreadBonus={0}
+					  showCalculatedFlavor={true}
+					/>
 				  ))}
 				</div>
 			  </div>

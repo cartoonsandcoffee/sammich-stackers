@@ -758,8 +758,8 @@ export default function SammichStackers() {
               <h2 className={`${styles.victoryTitle} text-2xl`}>🛒 Shop</h2>
               <div className="flex gap-3 items-center">
                 <span className={`${styles.statBadge} text-xl`}>💰 ${state.cash}</span>
-                <button onClick={() => setShowRemoveCard(true)} disabled={state.cash < 30} className={styles.buttonSmall}>
-                  Remove ($30)
+                <button onClick={() => setShowRemoveCard(true)} disabled={state.cash < 15} className={styles.buttonSmall}>
+                  Remove ($15)
                 </button>
               </div>
             </div>

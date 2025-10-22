@@ -44,7 +44,9 @@ const getInitialState = () => {
       message: "Welcome!",
       loading: false,
       showManualSave: false,
-      manualSaveData: null
+      manualSaveData: null,
+	  gameRecord: { highestMatch: 11, recordHolder: 'Fat Jared', deckId: null },
+	  isFinalMatch: false
     };
   }
   
@@ -166,19 +168,35 @@ export default function SammichStackers() {
   }, [state.playerCollection]);
   
   useEffect(() => {
-    if (state.phase === 'matchmaking' && state.username) {
-      const loadMatch = async () => {
-        const opponentData = await fetchOpponentDeck(state.matchNumber, createCard, generateBotDeck, getOpponentName);
-        dispatch({ 
-          type: 'INIT_ROUND', 
-          playerCards: state.playerCollection,
-          opponentDeck: opponentData.deck,
-          opponentName: opponentData.opponentName,
-          opponentDeckId: opponentData.deckId
-        });
-      };
-      loadMatch();
-    }
+	if (state.phase === 'matchmaking' && state.username) {
+	  const loadMatch = async () => {
+		// Fetch current game record
+		const record = await fetchGameRecord();
+		  
+		// Check if this is the final boss match
+		const isFinalMatch = state.matchNumber >= record.highestMatch;
+		  
+		const opponentData = await fetchOpponentDeck(
+			state.matchNumber,
+			createCard,
+			generateBotDeck,
+			getOpponentName,
+			isFinalMatch,
+			isFinalMatch ? record.highestMatch : null
+		);
+		  
+		dispatch({ 
+			type: 'INIT_ROUND', 
+			playerCards: state.playerCollection,
+			opponentDeck: opponentData.deck,
+			opponentName: opponentData.opponentName,
+			opponentDeckId: opponentData.deckId,
+			isFinalMatch: isFinalMatch || opponentData.isFinalBoss,
+			gameRecord: record
+		});
+	  };
+	  loadMatch();
+	}
   }, [state.phase, state.matchNumber]);
   
   useEffect(() => {
@@ -188,6 +206,9 @@ export default function SammichStackers() {
         if (!result.success && result.deckData) {
           dispatch({ type: 'SHOW_MANUAL_SAVE', deckData: result.deckData, jsonString: result.jsonString });
         }
+		if (result.success) {
+		  await updateGameRecord(state.matchNumber, state.username, result.deckId);
+		}		
       };
       save();
     }
@@ -631,6 +652,64 @@ export default function SammichStackers() {
 			</div>
 		  </div>
 		)}
+ 
+		{state.phase === 'final_victory' && (
+		  <div className={styles.victoryContainer}>
+			<h1 className={`${styles.victoryTitle} ${styles.victoryWin}`} style={{ fontSize: '48px', marginBottom: '24px' }}>
+			  👑 LEGENDARY! 👑
+			</h1>
+			
+			<div style={{
+			  backgroundColor: '#FFF',
+			  border: '4px solid #2A9D8F',
+			  borderRadius: '16px',
+			  padding: '32px',
+			  marginBottom: '32px',
+			  fontFamily: "'Baloo 2', cursive",
+			  fontSize: '20px',
+			  lineHeight: '1.6',
+			  textAlign: 'center'
+			}}>
+			  <p style={{ marginBottom: '16px' }}>
+				<strong>Hey, cool kid!</strong> You really owned the lunch room back there!
+			  </p>
+			  <p style={{ marginBottom: '16px' }}>
+				Your reputation is solidified as the <span style={{ color: '#2A9D8F', fontWeight: 'bold' }}>SULTAN OF SAMMICH STACKING!</span>
+			  </p>
+			  <p style={{ marginBottom: '0', fontSize: '18px', fontStyle: 'italic' }}>
+				Let's see how long your title holds...
+			  </p>
+			</div>
+			
+			<div style={{ 
+			  textAlign: 'center', 
+			  fontSize: '36px', 
+			  fontWeight: 'bold',
+			  color: '#2A9D8F',
+			  marginBottom: '32px'
+			}}>
+			  Final Score: {state.playerFinalScore}
+			  <br />
+			  <span style={{ fontSize: '24px' }}>Match {state.matchNumber}</span>
+			</div>
+			
+			<div className="flex flex-col sm:flex-row gap-3 justify-center">
+			  <button onClick={handleShare} className={styles.buttonPrimary}>
+				<Share2 size={20} className="inline mr-2" />
+				Share Victory
+			  </button>
+			  <button 
+				onClick={() => {
+				  localStorage.clear();
+				  window.location.reload();
+				}} 
+				className={styles.buttonSecondary}
+			  >
+				New Run
+			  </button>
+			</div>
+		  </div>
+		)} 
  
         {state.phase === 'shop' && (
           <div className={styles.victoryContainer}>

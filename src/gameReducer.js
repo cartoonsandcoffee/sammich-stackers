@@ -32,6 +32,24 @@ export const gameReducer = (state, action) => {
         message: 'Username updated!'
       };
     }
+
+	case 'SET_GAME_RECORD': {
+	  return {
+		...state,
+		gameRecord: action.record
+	  };
+	}
+
+	case 'SET_OPPONENT': {
+	  return {
+		...state,
+		opponentDeck: action.deck,
+		opponentName: action.name,
+		opponentDeckId: action.deckId,
+		isFinalMatch: action.isFinalMatch,
+		phase: 'playing'
+	  };
+	}
     
     case 'ABANDON_RUN': {
       // Clear all localStorage
@@ -106,6 +124,8 @@ export const gameReducer = (state, action) => {
         opponentBreadCard: opponentBreadCards[1],
         opponentFinished: false,
         opponentFinalScore: null,
+		isFinalMatch: action.isFinalMatch || false,
+		gameRecord: action.gameRecord || state.gameRecord,		
         currentTurn: 'player',
         roundResult: null,
         loading: false,
@@ -414,7 +434,19 @@ export const gameReducer = (state, action) => {
           phase: 'matchmaking',
           message: "Starting over..."
         };
+		
+		// JDM: are these 2 lines unnecessary?
+		localStorage.clear();
+		return getInitialState();		
       }
+
+	  // Check if player beat the final boss
+	  if (state.isFinalMatch && state.roundResult === 'win') {
+		return {
+		  ...state,
+		  phase: 'final_victory'
+		};
+	  }
       
       // WIN or TIE: Calculate cash and go to shop
       const playerScores = calculateScores(state.playerSandwich, state.permanentBreadBonus);

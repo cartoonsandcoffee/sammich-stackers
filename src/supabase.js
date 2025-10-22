@@ -33,35 +33,92 @@ export const supabaseRequest = async (endpoint, options = {}) => {
   }
 };
 
-export const fetchOpponentDeck = async (matchNumber, createCard, generateBotDeck, getOpponentName) => {
-  console.log('Fetching opponent deck for match:', matchNumber);
+export const fetchGameRecord = async () => {
+  try {
+    const data = await supabaseRequest(
+      'game_records?order=highest_match.desc&limit=1'
+    );
+    
+    if (data && data.length > 0) {
+      return {
+        highestMatch: data[0].highest_match,
+        recordHolder: data[0].record_holder_username,
+        deckId: data[0].record_holder_deck_id
+      };
+    }
+    
+    return { highestMatch: 11, recordHolder: 'Fat Jared', deckId: null };
+  } catch (error) {
+    console.error('Error fetching game record:', error);
+    return { highestMatch: 11, recordHolder: 'Fat Jared', deckId: null };
+  }
+};
+
+export const updateGameRecord = async (matchNumber, username, deckId) => {
+  try {
+    const result = await supabaseRequest('game_records', {
+      method: 'POST',
+      body: JSON.stringify({
+        highest_match: matchNumber,
+        record_holder_username: username,
+        record_holder_deck_id: deckId
+      })
+    });
+    
+    console.log('New record set!', result);
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating game record:', error);
+    return { success: false };
+  }
+};
+
+export const fetchOpponentDeck = async (matchNumber, createCard, generateBotDeck, getOpponentName, isFinalBoss = false, bossMatchNumber = null) => {
+  console.log('Fetching opponent deck for match:', matchNumber, 'Final boss:', isFinalBoss);
   
+  // If this is the final boss match, fetch the specific record holder's deck
+  if (isFinalBoss && bossMatchNumber) {
+    try {
+      const data = await supabaseRequest(
+        `winning_decks?match_number=eq.${bossMatchNumber}&order=won_at.desc&limit=1`
+      );
+      
+      if (data && data.length > 0) {
+        const bossDeck = data[0];
+        let deckComposition = bossDeck.deck_composition;
+        
+        if (typeof deckComposition === 'string') {
+          deckComposition = JSON.parse(deckComposition);
+        }
+        
+        const deckCards = deckComposition.map(card => 
+          createCard(card.name, card.permanentFlavorBonus || 0)
+        );
+        
+        return {
+          deck: deckCards,
+          opponentName: bossDeck.username,
+          deckId: bossDeck.id,
+          isFinalBoss: true
+        };
+      }
+    } catch (error) {
+      console.error('Error fetching final boss deck:', error);
+    }
+  }
+  
+  // Regular opponent fetching (existing code)
   try {
     const data = await supabaseRequest(
       `winning_decks?match_number=eq.${matchNumber}&order=won_at.desc&limit=100`
     );
     
-    console.log('Supabase returned:', data);
-    
     if (data && Array.isArray(data) && data.length > 0) {
       const randomDeck = data[Math.floor(Math.random() * data.length)];
-      console.log('Using real player deck from:', randomDeck.username);
       
       let deckComposition = randomDeck.deck_composition;
-      
       if (typeof deckComposition === 'string') {
-        try {
-          const parsed = JSON.parse(deckComposition);
-          deckComposition = parsed.deck_composition || parsed;
-        } catch (e) {
-          console.error('Failed to parse deck_composition string:', e);
-          throw new Error('Invalid deck format');
-        }
-      }
-      
-      if (!Array.isArray(deckComposition)) {
-        console.error('deck_composition is not an array:', deckComposition);
-        throw new Error('Invalid deck format');
+        deckComposition = JSON.parse(deckComposition);
       }
       
       const deckCards = deckComposition.map(card => 
@@ -73,17 +130,13 @@ export const fetchOpponentDeck = async (matchNumber, createCard, generateBotDeck
         opponentName: randomDeck.username,
         deckId: randomDeck.id
       };
-    } else {
-      console.log('No decks found in database, using bot');
     }
   } catch (error) {
     console.error('Error fetching opponent deck:', error);
   }
   
   // Fallback to bot
-  console.log('Generating bot deck for match:', matchNumber);
   const botDeckNames = generateBotDeck(matchNumber);
-  
   return {
     deck: botDeckNames.map(name => createCard(name)),
     opponentName: getOpponentName(matchNumber),

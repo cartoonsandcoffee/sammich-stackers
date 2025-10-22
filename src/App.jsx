@@ -102,38 +102,12 @@ export default function SammichStackers() {
 	  if (!shareContainer) return;
 	  
 	  try {
-		// Store original scroll position
-		const originalScrollY = window.scrollY;
-		
-		// Temporarily modify container for full capture
-		const originalMaxHeight = shareContainer.style.maxHeight;
-		const originalOverflow = shareContainer.style.overflow;
-		shareContainer.style.maxHeight = 'none';
-		shareContainer.style.overflow = 'visible';
-		
-		// Scroll to top of container
-		shareContainer.scrollIntoView({ behavior: 'instant', block: 'start' });
-		
-		// Wait a moment for layout to settle
-		await new Promise(resolve => setTimeout(resolve, 100));
-		
 		const canvas = await html2canvas(shareContainer, {
 		  backgroundColor: '#E8DCC4',
 		  scale: 2,
 		  logging: false,
-		  useCORS: true,
-		  windowWidth: shareContainer.scrollWidth,
-		  windowHeight: shareContainer.scrollHeight,
-		  width: shareContainer.scrollWidth,
-		  height: shareContainer.scrollHeight,
-		  scrollY: -window.scrollY,
-		  scrollX: -window.scrollX
+		  useCORS: true
 		});
-		
-		// Restore original styles and scroll
-		shareContainer.style.maxHeight = originalMaxHeight;
-		shareContainer.style.overflow = originalOverflow;
-		window.scrollTo(0, originalScrollY);
 		
 		canvas.toBlob(async (blob) => {
 		  const file = new File([blob], 'sammich-stackers-victory.png', { type: 'image/png' });
@@ -160,7 +134,6 @@ export default function SammichStackers() {
 		alert('Failed to capture screenshot. Try again!');
 	  }
 	};
-
 
   const downloadImage = (canvas) => {
     const link = document.createElement('a');
@@ -262,10 +235,104 @@ export default function SammichStackers() {
       setNewUsernameInput('');
     }
   };
+
+	const renderShareCard = () => {
+	  if (state.phase !== 'round_end') return null;
+	  
+	  return (
+		<div 
+		  id="victory-share-container" 
+		  style={{
+			position: 'fixed',
+			left: '-9999px',
+			top: 0,
+			width: '800px',
+			backgroundColor: '#E8DCC4',
+			padding: '32px',
+			fontFamily: "'Fredoka One', cursive"
+		  }}
+		>
+		  {/* Title */}
+		  <div style={{ 
+			textAlign: 'center', 
+			fontSize: '48px',
+			color: state.roundResult === 'win' ? '#2A9D8F' : state.roundResult === 'loss' ? '#E63946' : '#F4A261',
+			marginBottom: '16px',
+			textShadow: '0 4px 4px rgba(0,0,0,0.3)'
+		  }}>
+			{state.roundResult === 'win' ? '🎉 Victory!' : state.roundResult === 'loss' ? '💔 Defeat' : '🤝 Tie Game!'}
+		  </div>
+		  
+		  {/* Match info */}
+		  <div style={{ textAlign: 'center', fontSize: '24px', marginBottom: '24px', color: '#1A1A1A' }}>
+			Match {state.matchNumber} • {state.username}
+		  </div>
+		  
+		  {/* Scores */}
+		  <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '32px' }}>
+			<div style={{ textAlign: 'center' }}>
+			  <div style={{ fontSize: '20px', marginBottom: '8px', color: '#1A1A1A' }}>You</div>
+			  <div style={{ fontSize: '64px', fontWeight: 'bold', color: '#2A9D8F' }}>{state.playerFinalScore}</div>
+			</div>
+			<div style={{ fontSize: '48px', alignSelf: 'center', color: '#666' }}>vs</div>
+			<div style={{ textAlign: 'center' }}>
+			  <div style={{ fontSize: '20px', marginBottom: '8px', color: '#1A1A1A' }}>{opponentName}</div>
+			  <div style={{ fontSize: '64px', fontWeight: 'bold', color: '#E63946' }}>{state.opponentFinalScore}</div>
+			</div>
+		  </div>
+		  
+		  {/* Your sandwich */}
+		  <div style={{ marginBottom: '24px' }}>
+			<div style={{ fontSize: '24px', marginBottom: '12px', color: '#1A1A1A', textAlign: 'center' }}>Your Sammich</div>
+			<div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center' }}>
+			  {state.playerSandwich.map((card) => {
+				const cardData = CARD_DATABASE[card.name];
+				return (
+				  <div 
+					key={card.id}
+					style={{
+					  border: '4px solid #1A1A1A',
+					  borderRadius: '12px',
+					  padding: '12px',
+					  backgroundColor: '#FFF',
+					  width: '120px',
+					  fontSize: '12px'
+					}}
+				  >
+					<div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>
+					  {card.name}
+					  {card.permanentFlavorBonus > 0 && <span style={{ color: '#2A9D8F' }}>★</span>}
+					</div>
+					<div style={{ color: '#666' }}>
+					  🍽️ {cardData.flavor + (card.permanentFlavorBonus || 0)}
+					  {' '}🤢 {cardData.yuck}
+					  {' '}💵 {cardData.cash}
+					</div>
+				  </div>
+				);
+			  })}
+			</div>
+		  </div>
+		  
+		  {/* Footer */}
+		  <div style={{ 
+			textAlign: 'center', 
+			fontSize: '18px', 
+			color: '#666',
+			marginTop: '24px',
+			paddingTop: '16px',
+			borderTop: '2px solid #1A1A1A'
+		  }}>
+			Play at sammich-stackers.vercel.app
+		  </div>
+		</div>
+	  );
+	};
   
   return (
     <div className={styles.page}>
       <div className={styles.container}>
+		{renderShareCard()}
         <div className={styles.header}>
           <h1 className={styles.title}>🥪 Sammich Stackers 🥪</h1>
           <div className={styles.statsBar}>
